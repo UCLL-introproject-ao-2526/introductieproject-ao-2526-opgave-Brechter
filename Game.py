@@ -1,28 +1,17 @@
 import pygame as pg
-from Gameplay import *
+from Gameplay import Hand
 from Wallet import *
-from Gameplay import *
+from Cards import *
 
 
-#intialising and defining globals
+
+#intialising
 pg.init()
-WIDTH = 900
-HEIGHT = 600
-MIDW = WIDTH // 2
-MIDH = HEIGHT // 2
-screen = pg.display.set_mode([WIDTH, HEIGHT])
 pg.display.set_caption("Blackjack")
-FPS = 60
-FONT = pg.font.Font("freesansbold.ttf", 44)
-FONT_SMALL = pg.font.Font("freesansbold.ttf", 18)
-timer = pg.time.Clock()
-playing = False
-betting = True
-BG_COLOR = "#00A000"
-BUTTON_COLOR = '#FF0000'
-BUTTON_TEXT_COLOR = '#FFFFFF'
-TEXT_COLOR = '#FFFFFF'
+from Globals import *
 
+deck = Deck()
+phand = Hand(deck)
 
 def drawgame(active, betting, insur=False, hand=None):
     button_list = []
@@ -53,7 +42,7 @@ def drawgame(active, betting, insur=False, hand=None):
             button_list.append(reset)
             button_list.append(start)
         else:
-            scoretext = FONT_SMALL.render(f'Score: {1+4}', True, TEXT_COLOR)
+            scoretext = FONT_SMALL.render(f'Score: {phand.score}', True, TEXT_COLOR)
             screen.blit(scoretext, (10, HEIGHT-30))
             hit = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(WIDTH//6, (MIDH+3*HEIGHT)//4))
             hittext = FONT_SMALL.render('HIT', True, BUTTON_TEXT_COLOR)
@@ -93,6 +82,9 @@ def play():
                     if button_list[2].collidepoint(event.pos):
                         betting = False
                         button_list = drawgame(playing, betting)
+                if playing and not betting:
+                    if button_list[0].collidepoint(event.pos):
+                        simulatecard(MIDW, MIDH-52, deck.draw())
                 
 
         pg.display.flip()

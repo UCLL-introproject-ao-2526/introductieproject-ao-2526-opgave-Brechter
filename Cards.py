@@ -7,7 +7,7 @@ class Card:
     def __init__(self, suit, number, revealed = True):
         self.__suit = suit
         self.__number = number
-        self.revealed = revealed
+        self.__revealed = revealed
 
     @property
     def suit(self):
@@ -19,14 +19,14 @@ class Card:
     
     @property
     def revealed(self):
-        return self.revealed
+        return self.__revealed
     
     @revealed.setter
     def revealed(self, value):
-        self.revealed = value
+        self.__revealed = value
 
     def reveal(self):
-        self.revealed = True
+        self.__revealed = True
     
     @property
     def name(self):
@@ -50,7 +50,7 @@ class Deck:
 
     def draw(self, revealed = True):
         if not len(self.__cards) == 0:
-            card = self.__cards.pop(-1).name
+            card = self.__cards.pop(-1)
             card.revealed = revealed
             return card
         else:
