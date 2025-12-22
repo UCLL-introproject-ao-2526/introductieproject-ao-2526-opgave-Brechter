@@ -1,3 +1,4 @@
+#dit is de klasse die alles met geld afhandelt
 class Bundle:
     def __init__(self, money):
         self.__amount = money
@@ -13,13 +14,16 @@ class Bundle:
     def AddMoney(self, money):
         self.amount += money
 
+#dit zijn de relevante bundles
 wallet = Bundle(100)
 table = Bundle(0)
 insurance = Bundle(0)
 
+#hier de functies om dingen te doen met de wallet
 def BetAdd():
-    wallet.AddMoney(-20)
-    table.AddMoney(20)
+    if wallet.amount >= 20:
+        wallet.AddMoney(-20)
+        table.AddMoney(20)
 
 def BetReset():
     totalbet = table.amount
@@ -28,8 +32,9 @@ def BetReset():
 
 def Betinsurance():
     totalbet = table.amount//2
-    wallet.AddMoney(-totalbet)
-    insurance.AddMoney(totalbet)
+    if wallet.amount >= totalbet:
+        wallet.AddMoney(-totalbet)
+        insurance.AddMoney(totalbet)
 
 def Payout(state, dealerbj=False, insur=False):
     #loss: 0, draw: 1, win: 2, blackjack: 3

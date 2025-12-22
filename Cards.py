@@ -4,9 +4,10 @@ SUITS = ["h", "d", "c", "s"]
 NUMBERS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"]
 
 class Card:
-    def __init__(self, suit, number):
+    def __init__(self, suit, number, revealed = True):
         self.__suit = suit
         self.__number = number
+        self.revealed = revealed
 
     @property
     def suit(self):
@@ -15,6 +16,17 @@ class Card:
     @property
     def number(self):
         return self.__number
+    
+    @property
+    def revealed(self):
+        return self.revealed
+    
+    @revealed.setter
+    def revealed(self, value):
+        self.revealed = value
+
+    def reveal(self):
+        self.revealed = True
     
     @property
     def name(self):
@@ -29,15 +41,22 @@ def makenewdeck(n):
     return deck
 
 class Deck:
-    def __init__(self, decks=1, shuffled=True):
+    def __init__(self, decks=4):
         if decks < 0 or type(decks) != int:
             raise(ValueError)
         self.__cards = makenewdeck(decks)
-        if shuffled:
-            rd.shuffle(self.__cards)
+        rd.shuffle(self.__cards)
+        self.__decks = decks
 
-    def draw(self):
-        return self.__cards.pop(-1).name
+    def draw(self, revealed = True):
+        if not len(self.__cards) == 0:
+            card = self.__cards.pop(-1).name
+            card.revealed = revealed
+            return card
+        else:
+            self.__cards = makenewdeck(self.__decks)
+            rd.shuffle(self.__cards)
+            return self.draw(revealed)
     
     def __str__(self):
         str = ""
