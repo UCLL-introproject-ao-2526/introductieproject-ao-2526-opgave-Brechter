@@ -2,7 +2,7 @@ import pygame as pg
 from Gameplay import Hand
 from Wallet import *
 from Cards import *
-
+from Pointsystem import *
 
 
 #intialising
@@ -12,8 +12,32 @@ from Globals import *
 
 deck = Deck()
 phand = Hand(deck)
+dhand = Hand(deck, False)
+winscreen = False
+losescreen = False
+tiedscreen = False
+game_end = False
+
+def dealerplay(dealerhand):
+    global game_end
+    if 0 <= dealerhand.score < 17:
+        dealerhand.retrieve()
+        game_end = False
+
+def drawcards(phand, dhand):
+    plen = len(phand.cards)
+    dlen = len(dhand.cards)
+    pxpos = HAND_POS_X_EVEN if plen %2 == 0 else HAND_POS_X_ODD
+    dxpos = HAND_POS_X_EVEN if dlen %2 == 0 else HAND_POS_X_ODD
+    for i in range(plen):
+        simulatecard(pxpos[i], PHAND_POS_Y, phand.cards[i])
+    for j in range(dlen):
+        simulatecard(dxpos[j], DHAND_POS_Y, dhand.cards[j])
 
 def drawgame(active, betting, insur=False, hand=None):
+    global winscreen
+    global losescreen
+    global tiedscreen    
     button_list = []
     if not active:
         play = pg.draw.circle(screen, color=BUTTON_COLOR, radius=75, center=(MIDW, MIDH))
@@ -41,30 +65,80 @@ def drawgame(active, betting, insur=False, hand=None):
             button_list.append(bet)
             button_list.append(reset)
             button_list.append(start)
+        elif winscreen:
+            screen.fill(WIN_COLOR)
+            endtext = FONT_BIG.render('YOU WON', True, TEXT_COLOR)
+            screen.blit(endtext, (MIDW-250, MIDH-50))
+        elif losescreen:
+            screen.fill(LOSE_COLOR)
+            endtext = FONT_BIG.render('YOU LOST', True, TEXT_COLOR)    
+            screen.blit(endtext, (MIDW-260, MIDH-50))
+        elif tiedscreen:
+            screen.fill(TIED_COLOR)
+            endtext = FONT_BIG.render("IT'S A TIE", True, TEXT_COLOR)  
+            screen.blit(endtext, (MIDW-240, MIDH-50))
         else:
-            scoretext = FONT_SMALL.render(f'Score: {phand.score}', True, TEXT_COLOR)
+            if phand.score != 100:
+                scoretext = FONT_SMALL.render(f'Score: {phand.score if phand.score != -1 else "Dead"}', True, TEXT_COLOR)
+            else:
+                scoretext = FONT_SMALL.render(f'Score: Winner! (7 cards)', True, TEXT_COLOR)
             screen.blit(scoretext, (10, HEIGHT-30))
+            deckimg = pg.image.load("Card_designs\Back_card.png")
+            screen.blit(deckimg, (DECK_POS_X, DECK_POS_Y))
             hit = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(WIDTH//6, (MIDH+3*HEIGHT)//4))
             hittext = FONT_SMALL.render('HIT', True, BUTTON_TEXT_COLOR)
             screen.blit(hittext, (WIDTH//6-15, (MIDH+3*HEIGHT)//4-8))
             stand = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(5*WIDTH//6, (MIDH+3*HEIGHT)//4))
             standtext = FONT_SMALL.render('STAND', True, BUTTON_TEXT_COLOR)
             screen.blit(standtext, (5*WIDTH//6-30, (MIDH+3*HEIGHT)//4-8))
+            drawcards(phand, dhand)
             button_list.append(hit)
             button_list.append(stand)
     return button_list
 
 
-
 def play():
     run = True
+    frame = 0
     while run:
+        frame += 1
         timer.tick(FPS)
         screen.fill(BG_COLOR)
         global playing
         global betting
+        global dealerturn
+        global dealerturn_init
+        global game_end
+        global losescreen
+        global winscreen
+        global tiedscreen
         button_list = drawgame(playing, betting)
-
+        if game_end and frame > 180:
+            dealerturn = False
+            gamestate, dblackjack = CompareScores(phand.score, dhand.score)
+            if gamestate == 0:
+                losescreen = True
+            elif gamestate == 1:
+                tiedscreen = True
+            else:
+                winscreen = True
+            Payout(gamestate, dblackjack)
+            frame = 0
+            game_end = False
+        if (winscreen or tiedscreen or losescreen) and frame > 300:
+            frame = 0
+            winscreen, tiedscreen, losescreen = False, False, False
+            dhand.empty()
+            phand.empty()
+            betting = True
+        if dealerturn_init and frame > 60:
+            frame = 0
+            dealerturn_init = False
+            dealerturn = True
+        if dealerturn and frame > 60 and not game_end and not (winscreen or tiedscreen or losescreen):
+            frame = 0
+            game_end = True
+            dealerplay(dhand)
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 run = False
@@ -80,11 +154,16 @@ def play():
                     if button_list[1].collidepoint(event.pos):
                         BetReset()
                     if button_list[2].collidepoint(event.pos):
+                        game_end = False
                         betting = False
-                        button_list = drawgame(playing, betting)
                 if playing and not betting:
-                    if button_list[0].collidepoint(event.pos):
-                        simulatecard(MIDW, MIDH-52, deck.draw())
+                    if button_list[0].collidepoint(event.pos) and not (dealerturn_init or dealerturn):
+                        phand.retrieve()
+                    if button_list[1].collidepoint(event.pos) and not (dealerturn_init or dealerturn):
+                        dealerturn_init = True
+                        frame = 0
+        
+
                 
 
         pg.display.flip()

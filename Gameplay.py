@@ -1,6 +1,6 @@
 from Cards import *
 from Pointsystem import *
-from Globals import simulatecard, MIDH, MIDW
+from Globals import *
 
 class Hand:
     def __init__(self, deck, playerhand = True):
@@ -29,13 +29,20 @@ class Hand:
 
     @property
     def score(self):
-        scor = TotalPoints(self.points, self.aces)
-        return scor
+        if len(self.cards) < 7:
+            scor = TotalPoints(self.points, self.aces)
+            return scor
+        else:
+            return 100
     
     def retrieve(self):
         card = self.deck.draw()
-        simulatecard(MIDW, MIDH, card)
+        self.cards.append(card)
+        simulatecard(DECK_POS_X + 33, DECK_POS_Y + 48, card)
         self.points, self.aces = AddPoints(card, self.points, self.aces)
+    
+    def empty(self):
+        self.__init__(self.deck, self.playerhand)
         
 
     

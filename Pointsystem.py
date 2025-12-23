@@ -1,6 +1,8 @@
+from Globals import *
+
 def AddPoints(card, Points=0, Aces=0):
-    if Points > 21:
-        return -1
+    if not 0 <= Points <= 21:
+        return -1, Aces
     else:
         if card.number in ["2", "3", "4", "5", "6", "7", "8", "9"]:
             Points += int(card.number)
@@ -17,16 +19,16 @@ def TotalPoints(Score, Aces):
         else:
             Score += 1
         Aces -= 1
-    if Score > 21:
+    if Score > 21 and Score != 100:
         return -1
     else:        
         return Score
     
 def CompareScores(Player, Dealer): #dealerblackjack = -2, loss = -1, tie = 0, win = 1, blackjack = 2
     if Player == 21:
-        return 3
+        return 3, Dealerbj(Dealer)
     else:
-        return int(Player >= Dealer) + int(Player > Dealer)
+        return int(Player >= Dealer) + int(Player > Dealer), Dealerbj(Dealer)
     
 def Dealerbj(Dealer):
     return Dealer == 21
