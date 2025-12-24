@@ -12,3 +12,5 @@ def setup():
     dhand.retrieve(True)
     if dhand.cards[0].number == "A":
         return True
+    else:
+        return False

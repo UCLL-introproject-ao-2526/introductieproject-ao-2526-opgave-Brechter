@@ -35,6 +35,7 @@ def drawgame(active, betting):
     global tiedscreen  
     global insurask
     global insur
+    global dealerturn
     button_list = []
 
     #startscreen
@@ -88,18 +89,25 @@ def drawgame(active, betting):
         #during the game itself
         else:
             if phand.score != 100:
-                scoretext = FONT_SMALL.render(f'Score: {phand.score if phand.score != -1 else "Dead"}', True, TEXT_COLOR)
+                pscoretext = FONT_SMALL.render(f'Your score: {phand.score if phand.score != -1 else "Dead"}', True, TEXT_COLOR)
             else:
-                scoretext = FONT_SMALL.render(f'Score: Winner! (7 cards)', True, TEXT_COLOR)
-            screen.blit(scoretext, (10, HEIGHT-30))
+                pscoretext = FONT_SMALL.render(f'Your score: Winner! (7 cards)', True, TEXT_COLOR)
+            if not dealerturn:
+                dscoretext = FONT_SMALL.render(f"Dealer's score: ?", True, TEXT_COLOR)
+            elif dhand.score != 100:
+                dscoretext = FONT_SMALL.render(f"Dealer's score: {dhand.score if dhand.score != -1 else "Dead"}", True, TEXT_COLOR)
+            else:
+                dscoretext = FONT_SMALL.render(f"Dealer's score: Winner! (7 cards)", True, TEXT_COLOR)
+            screen.blit(pscoretext, (10, HEIGHT-50))
+            screen.blit(dscoretext, (10, HEIGHT-30))
             deckimg = pg.image.load("Card_designs\Back_card.png")
             screen.blit(deckimg, (DECK_POS_X, DECK_POS_Y))
-            hit = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(WIDTH//6, (MIDH+3*HEIGHT)//4))
+            hit = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(WIDTH//6, PHAND_POS_Y))
             hittext = FONT_SMALL.render('HIT', True, BUTTON_TEXT_COLOR)
-            screen.blit(hittext, (WIDTH//6-15, (MIDH+3*HEIGHT)//4-9))
-            stand = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(5*WIDTH//6, (MIDH+3*HEIGHT)//4))
+            screen.blit(hittext, (WIDTH//6-15, PHAND_POS_Y-9))
+            stand = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(5*WIDTH//6, PHAND_POS_Y))
             standtext = FONT_SMALL.render('STAND', True, BUTTON_TEXT_COLOR)
-            screen.blit(standtext, (5*WIDTH//6-30, (MIDH+3*HEIGHT)//4-9))
+            screen.blit(standtext, (5*WIDTH//6-30, PHAND_POS_Y-9))
             drawcards(phand, dhand)
             button_list.append(hit)
             button_list.append(stand)
@@ -107,7 +115,7 @@ def drawgame(active, betting):
             #if the first card is an ace the player will be asked to buy insurance, if the dealer gets a blackjack, the player will get double the insurance back
             if insurask:
                 ins_y = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(50, MIDH))
-                ins_n = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(150, MIDH))
+                ins_n = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(WIDTH//6, MIDH))
                 yestext = FONT_SMALL.render('YES', True, BUTTON_TEXT_COLOR)
                 notext = FONT_SMALL.render('NO', True, BUTTON_TEXT_COLOR)
                 screen.blit(yestext, (32, MIDH-9))
@@ -178,6 +186,12 @@ def play():
             betting = True
             playerdead = False
 
+        #if the player has 7 cards, the dealer automatically begins
+        if phand.score == 100 and frame > 59 and not (dealerturn_init or dealerturn):
+            dhand.cards[1].reveal()
+            frame = 0
+            dealerturn_init = True
+
         #the dealer's turn begins with him flipping his card and every second he'll draw a new one until he decides to end the game
         if dealerturn_init and frame > 60:
             frame = 0
@@ -215,8 +229,8 @@ def play():
                         insurask = setup()
 
                 #now it's the player's turn
-                if not playerdead:
-                    if playing and not betting:
+                elif playing and not betting:
+                    if not playerdead and len(phand.cards) < 7:
                         if button_list[0].collidepoint(event.pos) and not (dealerturn_init or dealerturn):
                             phand.retrieve()
                             if insurask:
