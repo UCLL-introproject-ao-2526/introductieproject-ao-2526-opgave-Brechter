@@ -28,18 +28,26 @@ def drawcards(phand, dhand):
         simulatecard(dxpos[j], DHAND_POS_Y, dhand.cards[j])
 
 def drawgame(active, betting):
+    
+    #getting globals and making variables
     global winscreen
     global losescreen
     global tiedscreen  
     global insurask
     global insur
     button_list = []
+
+    #startscreen
     if not active:
         play = pg.draw.circle(screen, color=BUTTON_COLOR, radius=75, center=(MIDW, MIDH))
         playtext = FONT.render('PLAY', True, BUTTON_TEXT_COLOR)
         screen.blit(playtext, (MIDW-56, MIDH-18))
         button_list.append(play)
+    
+    #once the game starts, you go to the betting menu
     else:
+
+        #setting up the standard text during the game
         wallettext = FONT_SMALL.render(f'Wallet: {wallet.amount}', True, TEXT_COLOR)
         screen.blit(wallettext, (10, 10))
         betamounttext = FONT_SMALL.render(f'Bet: {table.amount}', True, TEXT_COLOR) 
@@ -47,6 +55,8 @@ def drawgame(active, betting):
         if insur:
             insurancetext = FONT_SMALL.render(f'Insurance: {insurance.amount}', True, TEXT_COLOR) 
             screen.blit(insurancetext, (10, 50))
+
+        #the betting menu
         if betting:
             bet = pg.draw.circle(screen, color=BUTTON_COLOR, radius=75, center=(MIDW, (MIDH+HEIGHT)//2))
             bettext = FONT.render('BET', True, BUTTON_TEXT_COLOR)
@@ -60,6 +70,8 @@ def drawgame(active, betting):
             button_list.append(bet)
             button_list.append(reset)
             button_list.append(start)
+
+        #if the game ends
         elif winscreen:
             screen.fill(WIN_COLOR)
             endtext = FONT_BIG.render('YOU WON', True, TEXT_COLOR)
@@ -72,6 +84,8 @@ def drawgame(active, betting):
             screen.fill(TIED_COLOR)
             endtext = FONT_BIG.render("IT'S A TIE", True, TEXT_COLOR)  
             screen.blit(endtext, (MIDW-240, MIDH-50))
+
+        #during the game itself
         else:
             if phand.score != 100:
                 scoretext = FONT_SMALL.render(f'Score: {phand.score if phand.score != -1 else "Dead"}', True, TEXT_COLOR)
@@ -89,6 +103,8 @@ def drawgame(active, betting):
             drawcards(phand, dhand)
             button_list.append(hit)
             button_list.append(stand)
+
+            #if the first card is an ace the player will be asked to buy insurance, if the dealer gets a blackjack, the player will get double the insurance back
             if insurask:
                 ins_y = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(50, MIDH))
                 ins_n = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(150, MIDH))
@@ -104,12 +120,17 @@ def drawgame(active, betting):
 
 
 def play():
+    #setting up
     run = True
     frame = 0
+
+    #main game loop
     while run:
         frame += 1
         timer.tick(FPS)
         screen.fill(BG_COLOR)
+
+        #globals and variables
         global playing
         global betting
         global dealerturn
@@ -120,7 +141,21 @@ def play():
         global tiedscreen
         global insurask
         global insur
+        global playerdead
+        global phand
         button_list = drawgame(playing, betting)
+        
+        #to check if the player dies
+        if not playerdead and phand.score == -1:
+            playerdead = True
+            frame = 0
+        
+        #once the player dies they get one second before the dealer reveals his card
+        if playerdead and frame > 60:
+            dealerturn_init = True
+            dhand.cards[1].reveal()
+
+        #3 seconds after the game ends, the endscreen will appear
         if game_end and frame > 180:
             dealerturn = False
             gamestate, dblackjack = CompareScores(phand.score, dhand.score)
@@ -133,12 +168,17 @@ def play():
             Payout(gamestate, dblackjack)
             frame = 0
             game_end = False
+
+        #5 seconds after the endscreen a new game will begin
         if (winscreen or tiedscreen or losescreen) and frame > 300:
             frame = 0
             winscreen, tiedscreen, losescreen = False, False, False
             dhand.empty()
             phand.empty()
             betting = True
+            playerdead = False
+
+        #the dealer's turn begins with him flipping his card and every second he'll draw a new one until he decides to end the game
         if dealerturn_init and frame > 60:
             frame = 0
             dealerturn_init = False
@@ -147,15 +187,21 @@ def play():
             frame = 0
             game_end = True
             dealerplay(dhand)
+
+        #checking clicks
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 run = False
             if event.type == pg.MOUSEBUTTONUP:
+                    
+                #startscreen
                 if not playing:
                     if button_list[0].collidepoint(event.pos):
                         betting = True
                         playing = True
                         button_list = drawgame(playing, betting)
+                    
+                #betting stage
                 elif playing and betting:
                     if button_list[0].collidepoint(event.pos):
                         BetAdd()
@@ -164,27 +210,32 @@ def play():
                     if button_list[2].collidepoint(event.pos):
                         game_end = False
                         betting = False
+
+                        #at the end of the betting stage, the cards will be prepared
                         insurask = setup()
-                elif playing and not betting:
-                    if button_list[0].collidepoint(event.pos) and not (dealerturn_init or dealerturn):
-                        phand.retrieve()
+
+                #now it's the player's turn
+                if not playerdead:
+                    if playing and not betting:
+                        if button_list[0].collidepoint(event.pos) and not (dealerturn_init or dealerturn):
+                            phand.retrieve()
+                            if insurask:
+                                insurask = False
+                        if button_list[1].collidepoint(event.pos) and not (dealerturn_init or dealerturn):
+                            dealerturn_init = True
+                            frame = 0
+                            dhand.cards[1].reveal()
+                            if insurask:
+                                insurask = False
                         if insurask:
-                            insurask = False
-                    if button_list[1].collidepoint(event.pos) and not (dealerturn_init or dealerturn):
-                        dealerturn_init = True
-                        frame = 0
-                        dhand.cards[1].reveal()
-                        if insurask:
-                            insurask = False
-                    if insurask:
-                        if button_list[2].collidepoint(event.pos):
-                            insurask = False
-                            insur = Betinsurance()
-                        if button_list[3].collidepoint(event.pos):
-                            insurask = False
+                            if button_list[2].collidepoint(event.pos):
+                                insurask = False
+                                insur = Betinsurance()
+                            if button_list[3].collidepoint(event.pos):
+                                insurask = False
 
                 
-
+    #end of loop   
         pg.display.flip()
     pg.quit()
 

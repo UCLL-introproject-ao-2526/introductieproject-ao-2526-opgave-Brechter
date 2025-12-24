@@ -3,7 +3,8 @@ from Pointsystem import *
 from Globals import *
 
 SUITS = ["h", "d", "c", "s"]
-NUMBERS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"]
+#NUMBERS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"]
+NUMBERS = ["2"]
 
 class Card:
     def __init__(self, suit, number, revealed = True):
@@ -93,11 +94,12 @@ class Hand:
 
     @property
     def score(self):
-        if len(self.cards) < 7:
-            scor = TotalPoints(self.points, self.aces)
+        scor = TotalPoints(self.points, self.aces)
+        if len(self.cards) < 7 or scor == -1:
             return scor
         else:
             return 100
+            
     
     def retrieve(self, hidden=False):
         card = self.deck.draw(not hidden)

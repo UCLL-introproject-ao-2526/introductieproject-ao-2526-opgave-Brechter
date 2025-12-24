@@ -35,7 +35,7 @@ winscreen = False
 losescreen = False
 tiedscreen = False
 game_end = False
-
+playerdead = False
 
 
 
