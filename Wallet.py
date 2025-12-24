@@ -1,3 +1,5 @@
+from Globals import *
+
 #dit is de klasse die alles met geld afhandelt
 class Bundle:
     def __init__(self, money):
@@ -35,6 +37,7 @@ def Betinsurance():
     if wallet.amount >= totalbet:
         wallet.AddMoney(-totalbet)
         insurance.AddMoney(totalbet)
+        return True
 
 def Payout(state, dealerbj=False, insur=False):
     #loss: 0, draw: 1, win: 2, blackjack: 3

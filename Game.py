@@ -1,8 +1,8 @@
 import pygame as pg
-from Gameplay import Hand
 from Wallet import *
 from Cards import *
 from Pointsystem import *
+from Setup import *
 
 
 #intialising
@@ -10,13 +10,6 @@ pg.init()
 pg.display.set_caption("Blackjack")
 from Globals import *
 
-deck = Deck()
-phand = Hand(deck)
-dhand = Hand(deck, False)
-winscreen = False
-losescreen = False
-tiedscreen = False
-game_end = False
 
 def dealerplay(dealerhand):
     global game_end
@@ -34,10 +27,12 @@ def drawcards(phand, dhand):
     for j in range(dlen):
         simulatecard(dxpos[j], DHAND_POS_Y, dhand.cards[j])
 
-def drawgame(active, betting, insur=False, hand=None):
+def drawgame(active, betting):
     global winscreen
     global losescreen
-    global tiedscreen    
+    global tiedscreen  
+    global insurask
+    global insur
     button_list = []
     if not active:
         play = pg.draw.circle(screen, color=BUTTON_COLOR, radius=75, center=(MIDW, MIDH))
@@ -50,18 +45,18 @@ def drawgame(active, betting, insur=False, hand=None):
         betamounttext = FONT_SMALL.render(f'Bet: {table.amount}', True, TEXT_COLOR) 
         screen.blit(betamounttext, (10, 30))
         if insur:
-            insurancetext = FONT_SMALL.render(f'Bet: {table.amount}', True, TEXT_COLOR) 
-            screen.blit(betamounttext, (10, 50))
+            insurancetext = FONT_SMALL.render(f'Insurance: {insurance.amount}', True, TEXT_COLOR) 
+            screen.blit(insurancetext, (10, 50))
         if betting:
             bet = pg.draw.circle(screen, color=BUTTON_COLOR, radius=75, center=(MIDW, (MIDH+HEIGHT)//2))
             bettext = FONT.render('BET', True, BUTTON_TEXT_COLOR)
             screen.blit(bettext, (MIDW-44, (MIDH+HEIGHT)//2-18))
             reset = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(MIDW-100, MIDH//4))
             resettext = FONT_SMALL.render('RESET', True, BUTTON_TEXT_COLOR)
-            screen.blit(resettext, (MIDW-130, MIDH//4-8))
+            screen.blit(resettext, (MIDW-130, MIDH//4-9))
             start = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(MIDW+100, MIDH//4))
             starttext = FONT_SMALL.render('START', True, BUTTON_TEXT_COLOR)
-            screen.blit(starttext, (MIDW+70, MIDH//4-8))
+            screen.blit(starttext, (MIDW+70, MIDH//4-9))
             button_list.append(bet)
             button_list.append(reset)
             button_list.append(start)
@@ -87,13 +82,24 @@ def drawgame(active, betting, insur=False, hand=None):
             screen.blit(deckimg, (DECK_POS_X, DECK_POS_Y))
             hit = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(WIDTH//6, (MIDH+3*HEIGHT)//4))
             hittext = FONT_SMALL.render('HIT', True, BUTTON_TEXT_COLOR)
-            screen.blit(hittext, (WIDTH//6-15, (MIDH+3*HEIGHT)//4-8))
+            screen.blit(hittext, (WIDTH//6-15, (MIDH+3*HEIGHT)//4-9))
             stand = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(5*WIDTH//6, (MIDH+3*HEIGHT)//4))
             standtext = FONT_SMALL.render('STAND', True, BUTTON_TEXT_COLOR)
-            screen.blit(standtext, (5*WIDTH//6-30, (MIDH+3*HEIGHT)//4-8))
+            screen.blit(standtext, (5*WIDTH//6-30, (MIDH+3*HEIGHT)//4-9))
             drawcards(phand, dhand)
             button_list.append(hit)
             button_list.append(stand)
+            if insurask:
+                ins_y = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(50, MIDH))
+                ins_n = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(150, MIDH))
+                yestext = FONT_SMALL.render('YES', True, BUTTON_TEXT_COLOR)
+                notext = FONT_SMALL.render('NO', True, BUTTON_TEXT_COLOR)
+                screen.blit(yestext, (32, MIDH-9))
+                screen.blit(notext, (137, MIDH-9))
+                instext = FONT_SMALL.render('INSURANCE?', True, TEXT_COLOR)
+                screen.blit(instext, (40, MIDH-80))
+                button_list.append(ins_y)
+                button_list.append(ins_n)
     return button_list
 
 
@@ -112,6 +118,8 @@ def play():
         global losescreen
         global winscreen
         global tiedscreen
+        global insurask
+        global insur
         button_list = drawgame(playing, betting)
         if game_end and frame > 180:
             dealerturn = False
@@ -148,7 +156,7 @@ def play():
                         betting = True
                         playing = True
                         button_list = drawgame(playing, betting)
-                if playing and betting:
+                elif playing and betting:
                     if button_list[0].collidepoint(event.pos):
                         BetAdd()
                     if button_list[1].collidepoint(event.pos):
@@ -156,13 +164,24 @@ def play():
                     if button_list[2].collidepoint(event.pos):
                         game_end = False
                         betting = False
-                if playing and not betting:
+                        insurask = setup()
+                elif playing and not betting:
                     if button_list[0].collidepoint(event.pos) and not (dealerturn_init or dealerturn):
                         phand.retrieve()
+                        if insurask:
+                            insurask = False
                     if button_list[1].collidepoint(event.pos) and not (dealerturn_init or dealerturn):
                         dealerturn_init = True
                         frame = 0
-        
+                        dhand.cards[1].reveal()
+                        if insurask:
+                            insurask = False
+                    if insurask:
+                        if button_list[2].collidepoint(event.pos):
+                            insurask = False
+                            insur = Betinsurance()
+                        if button_list[3].collidepoint(event.pos):
+                            insurask = False
 
                 
 

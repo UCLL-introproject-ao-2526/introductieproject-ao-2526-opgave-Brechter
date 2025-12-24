@@ -23,12 +23,22 @@ BG_COLOR = "#00A000"
 BUTTON_COLOR = '#FF0000'
 BUTTON_TEXT_COLOR = '#FFFFFF'
 TEXT_COLOR = '#FFFFFF'
-WIN_COLOR = "#EAE317"
+WIN_COLOR = "#E9E10D"
 LOSE_COLOR = "#FF0000"
 TIED_COLOR = "#4040FF"
 dealerturn_init = False
 dealerturn = False
 game_end = False
+insurask = False
+insur = False
+winscreen = False
+losescreen = False
+tiedscreen = False
+game_end = False
+
+
+
+
 
 def simulatecard(xpos, ypos, card):
     xpos = xpos - 33
