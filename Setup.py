@@ -5,12 +5,16 @@ deck = Deck()
 phand = Hand(deck)
 dhand = Hand(deck, False)
 
-def setup():
-    for i in range(2):
+def setup(n):
+    if n <= 2:
         phand.retrieve()
-    dhand.retrieve()
-    dhand.retrieve(True)
-    if dhand.cards[0].number == "A":
-        return True
-    else:
         return False
+    elif n == 3:
+        dhand.retrieve()
+        return False
+    elif n == 4:
+        dhand.retrieve(True)
+        if dhand.cards[0].number == "A":
+            return True
+        else:
+            return False
