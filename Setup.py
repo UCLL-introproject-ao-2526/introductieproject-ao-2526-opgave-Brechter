@@ -14,7 +14,7 @@ def setup(n):
         return False
     elif n == 4:
         dhand.retrieve(True)
-        if dhand.cards[0].number == "A":
+        if dhand.cards[1].number == "A":
             return True
         else:
             return False

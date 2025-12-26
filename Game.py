@@ -12,10 +12,12 @@ from Globals import *
 
 
 def dealerplay(dealerhand):
+    global dealerturn
     global game_end
     if 0 <= dealerhand.score < 17:
         dealerhand.retrieve()
         game_end = False
+        dealerturn = True
 
 def drawcards(phand, dhand):
     plen = len(phand.cards)
@@ -37,6 +39,7 @@ def drawgame(active, betting):
     global insur
     global dealerturn
     global setupanimation
+    global ingame
     button_list = []
 
     #startscreen
@@ -97,10 +100,10 @@ def drawgame(active, betting):
             drawcards(phand, dhand)
             if not setupanimation:
                 if phand.score != 100:
-                    pscoretext = FONT_SMALL.render(f'Your score: {phand.score if phand.score != -1 else "Dead"}', True, TEXT_COLOR)
+                    pscoretext = FONT_SMALL.render(f'Your score: {phand.score if phand.score >= 0 else "Dead"}', True, TEXT_COLOR)
                 else:
                     pscoretext = FONT_SMALL.render(f'Your score: Winner! (7 cards)', True, TEXT_COLOR)
-                if not dealerturn:
+                if ingame:
                     dscoretext = FONT_SMALL.render(f"Dealer's score: ?", True, TEXT_COLOR)
                 elif dhand.score != 100:
                     dscoretext = FONT_SMALL.render(f"Dealer's score: {dhand.score if dhand.score != -1 else "Dead"}", True, TEXT_COLOR)
@@ -108,27 +111,28 @@ def drawgame(active, betting):
                     dscoretext = FONT_SMALL.render(f"Dealer's score: Winner! (7 cards)", True, TEXT_COLOR)
                 screen.blit(pscoretext, (10, HEIGHT-50))
                 screen.blit(dscoretext, (10, HEIGHT-30))
-                hit = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(WIDTH//6, PHAND_POS_Y))
-                hittext = FONT_SMALL.render('HIT', True, BUTTON_TEXT_COLOR)
-                screen.blit(hittext, (WIDTH//6-15, PHAND_POS_Y-9))
-                stand = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(5*WIDTH//6, PHAND_POS_Y))
-                standtext = FONT_SMALL.render('STAND', True, BUTTON_TEXT_COLOR)
-                screen.blit(standtext, (5*WIDTH//6-30, PHAND_POS_Y-9))
-                button_list.append(hit)
-                button_list.append(stand)
+                if ingame:
+                    hit = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(WIDTH//6, PHAND_POS_Y))
+                    hittext = FONT_SMALL.render('HIT', True, BUTTON_TEXT_COLOR)
+                    screen.blit(hittext, (WIDTH//6-15, PHAND_POS_Y-9))
+                    stand = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(5*WIDTH//6, PHAND_POS_Y))
+                    standtext = FONT_SMALL.render('STAND', True, BUTTON_TEXT_COLOR)
+                    screen.blit(standtext, (5*WIDTH//6-30, PHAND_POS_Y-9))
+                    button_list.append(hit)
+                    button_list.append(stand)
 
-                #if the first card is an ace the player will be asked to buy insurance, if the dealer gets a blackjack, the player will get double the insurance back
-                if insurask:
-                    ins_y = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(50, MIDH))
-                    ins_n = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(WIDTH//6, MIDH))
-                    yestext = FONT_SMALL.render('YES', True, BUTTON_TEXT_COLOR)
-                    notext = FONT_SMALL.render('NO', True, BUTTON_TEXT_COLOR)
-                    screen.blit(yestext, (31, MIDH-9))
-                    screen.blit(notext, (138, MIDH-9))
-                    instext = FONT_SMALL.render('INSURANCE?', True, TEXT_COLOR)
-                    screen.blit(instext, (40, MIDH-80))
-                    button_list.append(ins_y)
-                    button_list.append(ins_n)
+                    #if the first card is an ace the player will be asked to buy insurance, if the dealer gets a blackjack, the player will get double the insurance back
+                    if insurask:
+                        ins_y = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(50, MIDH))
+                        ins_n = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(WIDTH//6, MIDH))
+                        yestext = FONT_SMALL.render('YES', True, BUTTON_TEXT_COLOR)
+                        notext = FONT_SMALL.render('NO', True, BUTTON_TEXT_COLOR)
+                        screen.blit(yestext, (31, MIDH-9))
+                        screen.blit(notext, (138, MIDH-9))
+                        instext = FONT_SMALL.render('INSURANCE?', True, TEXT_COLOR)
+                        screen.blit(instext, (40, MIDH-80))
+                        button_list.append(ins_y)
+                        button_list.append(ins_n)
     return button_list
 
 
@@ -140,7 +144,6 @@ def play():
 
     #main game loop
     while run:
-        frame += 1
         timer.tick(FPS)
         screen.fill(BG_COLOR)
 
@@ -158,28 +161,52 @@ def play():
         global playerdead
         global phand
         global setupanimation
+        global ingame
         button_list = drawgame(playing, betting)
-        
-        #to check if the player dies
-        if not playerdead and phand.score == -1:
-            playerdead = True
-            frame = 0
 
+        print(ingame)
+        
         if setupanimation and frame > 60:
             frame = 0
             setupdealt += 1
             insurask = setup(setupdealt)
             if setupdealt == 4:
                 setupanimation = False
+                ingame = True
+        
+        #to check if the player dies
+        if ingame and phand.score == -1:
+            playerdead = True
+            ingame = False
+            frame = 0
         
         #once the player dies they get one second before the dealer reveals his card
         if playerdead and frame > 60:
             dealerturn_init = True
-            dhand.cards[1].reveal()
+            playerdead = False
+
+
+        #if the player has 7 cards, the dealer automatically begins
+        if phand.score == 100 and frame > 59 and not (dealerturn_init or dealerturn):
+            frame = 0
+            dealerturn_init = True
+
+        #the dealer's turn begins with him flipping his card and every second he'll draw a new one until he decides to end the game
+        if dealerturn_init and frame > 59:
+            dhand.cards[0].reveal()
+            frame = 0
+            dealerturn_init = False
+            dealerturn = True
+
+        #now the dealer can start pulling cards
+        if dealerturn and frame > 58:
+            frame = 0
+            game_end = True
+            dealerturn = False
+            dealerplay(dhand)
 
         #3 seconds after the game ends, the endscreen will appear
         if game_end and frame > 180:
-            dealerturn = False
             gamestate, dblackjack = CompareScores(phand.score, dhand.score)
             if gamestate == 0:
                 losescreen = True
@@ -198,23 +225,13 @@ def play():
             dhand.empty()
             phand.empty()
             betting = True
-            playerdead = False
 
-        #if the player has 7 cards, the dealer automatically begins
-        if phand.score == 100 and frame > 59 and not (dealerturn_init or dealerturn):
-            dhand.cards[1].reveal()
-            frame = 0
-            dealerturn_init = True
 
-        #the dealer's turn begins with him flipping his card and every second he'll draw a new one until he decides to end the game
-        if dealerturn_init and frame > 60:
-            frame = 0
-            dealerturn_init = False
-            dealerturn = True
-        if dealerturn and frame > 60 and not game_end and not (winscreen or tiedscreen or losescreen):
-            frame = 0
-            game_end = True
-            dealerplay(dhand)
+
+
+
+
+        #start of the for loop
 
         #checking clicks
         for event in pg.event.get():
@@ -251,8 +268,9 @@ def play():
                                 insurask = False
                         if button_list[1].collidepoint(event.pos) and not (dealerturn_init or dealerturn):
                             dealerturn_init = True
+                            ingame = False
                             frame = 0
-                            dhand.cards[1].reveal()
+                            dhand.cards[0].reveal()
                             if insurask:
                                 insurask = False
                         if insurask:
@@ -264,6 +282,7 @@ def play():
 
                 
     #end of loop   
+        frame +=1
         pg.display.flip()
     pg.quit()
 

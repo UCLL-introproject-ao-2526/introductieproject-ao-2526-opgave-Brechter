@@ -10,7 +10,7 @@ DECK_POS_Y = MIDH - 72
 PHAND_POS_Y = MIDH + 150
 DHAND_POS_Y = MIDH - 198
 HAND_POS_X_ODD = [MIDW, MIDW-66, MIDW+66, MIDW-132, MIDW+132, MIDW-198, MIDW+198]
-HAND_POS_X_EVEN = [MIDW-33, MIDW+33, MIDW-99, MIDW+99, MIDW-165, MIDW+165]
+HAND_POS_X_EVEN = [MIDW+33, MIDW-33, MIDW+99, MIDW-99, MIDW+165, MIDW-165]
 screen = pg.display.set_mode([WIDTH, HEIGHT])
 FPS = 60
 FONT = pg.font.Font("freesansbold.ttf", 44)
@@ -37,7 +37,7 @@ tiedscreen = False
 game_end = False
 playerdead = False
 setupanimation = False
-
+ingame = False
 
 
 

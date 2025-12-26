@@ -3,7 +3,7 @@ from Pointsystem import *
 from Globals import *
 
 SUITS = ["h", "d", "c", "s"]
-NUMBERS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"]
+NUMBERS = ["A", "2", "3"]#, "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"]
 
 class Card:
     def __init__(self, suit, number, revealed = True):
@@ -65,6 +65,22 @@ class Deck:
         for card in self.__cards:
             str += card.name + ' '
         return str[:-1]
+    
+def add_to_list(elem, list):
+    list.append(elem)
+    if len(list)%2 == 1:
+        return list
+    else:
+        list.reverse()
+        if len(list) == 2:
+            return list
+        else:
+            l1 = [list[-3], list[-1]]
+            lf = [list[0], list[2]]
+            if len(list) == 4:
+                return l1 + lf
+            else:
+                return l1 + [list[1], list[4]] + lf
 
 class Hand:
     def __init__(self, deck, playerhand = True):
@@ -98,11 +114,10 @@ class Hand:
             return scor
         else:
             return 100
-            
     
     def retrieve(self, hidden=False):
         card = self.deck.draw(not hidden)
-        self.cards.append(card)
+        self.cards = add_to_list(card, self.cards)
         simulatecard(DECK_POS_X + 33, DECK_POS_Y + 48, card)
         self.points, self.aces = AddPoints(card, self.points, self.aces)
     
