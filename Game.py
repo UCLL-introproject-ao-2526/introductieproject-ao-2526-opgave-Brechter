@@ -131,8 +131,8 @@ def drawgame(active, betting):
             screen.blit(endtext, (MIDW-240, MIDH-50))
         elif deadscreen:
             screen.fill(DEAD_COLOR)
-            endtext = FONT_BIG.render("YOU'RE BROKE", True, LOSE_COLOR)
-            screen.blit(endtext, (65, MIDH-50))
+            endtext = FONT_BIG.render("GAME OVER", True, LOSE_COLOR)
+            screen.blit(endtext, (MIDW-310, MIDH-50))
 
         #during the game itself
         else:
