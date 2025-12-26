@@ -14,20 +14,44 @@ from Globals import *
 def dealerplay(dealerhand):
     global dealerturn
     global game_end
+    global dcardanimation
     if 0 <= dealerhand.score < 17:
         dealerhand.retrieve()
+        dcardanimation = True
         game_end = False
         dealerturn = True
 
-def drawcards(phand, dhand):
-    plen = len(phand.cards)
-    dlen = len(dhand.cards)
-    pxpos = HAND_POS_X_EVEN if plen %2 == 0 else HAND_POS_X_ODD
-    dxpos = HAND_POS_X_EVEN if dlen %2 == 0 else HAND_POS_X_ODD
-    for i in range(plen):
-        simulatecard(pxpos[i], PHAND_POS_Y, phand.cards[i])
-    for j in range(dlen):
-        simulatecard(dxpos[j], DHAND_POS_Y, dhand.cards[j])
+def drawcards(phand, dhand, plinvis=False, dlinvis=False):
+        if len(phand.cards) > 0:
+            plen = len(phand.cards)
+            pxpos = HAND_POS_X_EVEN if plen %2 == 0 else HAND_POS_X_ODD
+            if plen%2==1:
+                for i in range(plen - 1):
+                    simulatecard(pxpos[i], PHAND_POS_Y, phand.cards[i])
+                if not plinvis:
+                    simulatecard(pxpos[plen - 1], PHAND_POS_Y, phand.cards[plen - 1])
+            else:
+                for i in range(plen):
+                    if i != plen-2:
+                        simulatecard(pxpos[i], PHAND_POS_Y, phand.cards[i])
+                if not plinvis:
+                    simulatecard(pxpos[plen - 2], PHAND_POS_Y, phand.cards[plen - 2])
+        
+        if len(dhand.cards) > 0:    
+            dlen = len(dhand.cards)
+            dxpos = HAND_POS_X_EVEN if dlen %2 == 0 else HAND_POS_X_ODD
+            if dlen%2 == 1:
+                for j in range(dlen - 1):
+                    simulatecard(dxpos[j], DHAND_POS_Y, dhand.cards[j])
+                if not dlinvis:
+                    simulatecard(dxpos[dlen - 1], DHAND_POS_Y, dhand.cards[dlen - 1])
+            else:
+                for i in range(dlen):
+                    if i != dlen-2:
+                        simulatecard(dxpos[i], DHAND_POS_Y, dhand.cards[i])
+                if not dlinvis:
+                    simulatecard(dxpos[dlen - 2], DHAND_POS_Y, dhand.cards[dlen - 2])
+        
 
 def drawgame(active, betting):
     
@@ -40,6 +64,8 @@ def drawgame(active, betting):
     global dealerturn
     global setupanimation
     global ingame
+    global dcardanimation
+    global pcardanimation
     button_list = []
 
     #startscreen
@@ -97,7 +123,12 @@ def drawgame(active, betting):
         else:
             deckimg = pg.image.load("Card_designs\Back_card.png")
             screen.blit(deckimg, (DECK_POS_X, DECK_POS_Y))
-            drawcards(phand, dhand)
+            if pcardanimation:
+                drawcards(phand, dhand, True)
+            elif dcardanimation:
+                drawcards(phand, dhand, False, True)
+            else:
+                drawcards(phand, dhand)
             if not setupanimation:
                 if phand.score != 100:
                     pscoretext = FONT_SMALL.render(f'Your score: {phand.score if phand.score >= 0 else "Dead"}', True, TEXT_COLOR)
@@ -118,8 +149,10 @@ def drawgame(active, betting):
                     stand = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(5*WIDTH//6, PHAND_POS_Y))
                     standtext = FONT_SMALL.render('STAND', True, BUTTON_TEXT_COLOR)
                     screen.blit(standtext, (5*WIDTH//6-30, PHAND_POS_Y-9))
-                    button_list.append(hit)
-                    button_list.append(stand)
+                    if not pcardanimation:
+                        button_list.append(hit)
+                        button_list.append(stand)
+                    
 
                     #if the first card is an ace the player will be asked to buy insurance, if the dealer gets a blackjack, the player will get double the insurance back
                     if insurask:
@@ -135,6 +168,8 @@ def drawgame(active, betting):
                         button_list.append(ins_n)
     return button_list
 
+
+    
 
 def play():
     #setting up
@@ -162,18 +197,31 @@ def play():
         global phand
         global setupanimation
         global ingame
+        global pcardanimation
+        global dcardanimation
+        animation = dcardanimation or pcardanimation or setupanimation
+        endscreen = winscreen or tiedscreen or losescreen
         button_list = drawgame(playing, betting)
-
-        print(ingame)
         
-        if setupanimation and frame > 60:
+        if setupanimation and frame > 30:
+            if setupdealt < 2:
+                pcardanimation = True
+            else:
+                pcardanimation = False
+                dcardanimation = True
             frame = 0
             setupdealt += 1
             insurask = setup(setupdealt)
             if setupdealt == 4:
                 setupanimation = False
                 ingame = True
-        
+
+        if pcardanimation or dcardanimation:
+            if frame > 15:
+                pcardanimation, dcardanimation = False, False
+            else:
+                cardanimation(phand, dhand, frame, pcardanimation)
+
         #to check if the player dies
         if ingame and phand.score == -1:
             playerdead = True
@@ -187,7 +235,8 @@ def play():
 
 
         #if the player has 7 cards, the dealer automatically begins
-        if phand.score == 100 and frame > 59 and not (dealerturn_init or dealerturn):
+        if phand.score == 100 and frame > 59 and not (dealerturn_init or dealerturn or game_end or endscreen):
+            ingame = False
             frame = 0
             dealerturn_init = True
 
@@ -219,12 +268,13 @@ def play():
             game_end = False
 
         #5 seconds after the endscreen a new game will begin
-        if (winscreen or tiedscreen or losescreen) and frame > 300:
+        if endscreen and frame > 300:
             frame = 0
             winscreen, tiedscreen, losescreen = False, False, False
             dhand.empty()
             phand.empty()
             betting = True
+            setupdealt = 0
 
 
 
@@ -261,9 +311,11 @@ def play():
 
                 #now it's the player's turn
                 elif playing and not betting:
-                    if not playerdead and len(phand.cards) < 7 and not setupanimation:
-                        if button_list[0].collidepoint(event.pos) and not (dealerturn_init or dealerturn):
+                    if not playerdead and len(phand.cards) < 7 and not animation:
+                        if button_list[0].collidepoint(event.pos) and not (dealerturn_init or dealerturn) and frame > 15:
                             phand.retrieve()
+                            pcardanimation = True
+                            frame = 0
                             if insurask:
                                 insurask = False
                         if button_list[1].collidepoint(event.pos) and not (dealerturn_init or dealerturn):

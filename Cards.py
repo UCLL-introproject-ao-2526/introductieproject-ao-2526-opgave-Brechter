@@ -1,9 +1,10 @@
 import random as rd
+import pygame as pg
 from Pointsystem import *
 from Globals import *
 
 SUITS = ["h", "d", "c", "s"]
-NUMBERS = ["A", "2", "3"]#, "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"]
+NUMBERS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"]
 
 class Card:
     def __init__(self, suit, number, revealed = True):
@@ -118,8 +119,39 @@ class Hand:
     def retrieve(self, hidden=False):
         card = self.deck.draw(not hidden)
         self.cards = add_to_list(card, self.cards)
-        simulatecard(DECK_POS_X + 33, DECK_POS_Y + 48, card)
         self.points, self.aces = AddPoints(card, self.points, self.aces)
+        simulatecard(DECK_POS_X + 33, DECK_POS_Y + 48, card)
     
     def empty(self):
         self.__init__(self.deck, self.playerhand)
+
+def simulatecard(xpos, ypos, card):
+    xpos = xpos - 33
+    ypos = ypos - 48
+    if card.revealed:
+        card_img = pg.image.load(f"Card_designs\{card.name}.png")
+    else:
+        card_img = pg.image.load("Card_designs\Back_card.png")
+    screen.blit(card_img, (xpos, ypos))
+
+def cardanimation(phand, dhand, frame, pcardanim):
+    eposx = 0
+    eposy = 0
+    card = None
+    if pcardanim:
+        handsize = len(phand.cards)-1
+        eposy = PHAND_POS_Y
+        eposx = HAND_POS_X_EVEN[handsize-1] if (handsize+1)%2 == 0 else HAND_POS_X_ODD[handsize]
+        card = phand.cards[2*(handsize//2)]
+    else:
+        handsize = len(dhand.cards)-1
+        if handsize > -1:
+            eposy = DHAND_POS_Y
+            eposx = HAND_POS_X_EVEN[handsize-1] if (handsize+1)%2 == 0 else HAND_POS_X_ODD[handsize]
+            card = dhand.cards[2*(handsize//2)]
+    bposx = MIDW
+    bposy = MIDH
+    xpos = ((15-frame)*bposx + frame*eposx)//15
+    ypos = ((15-frame)*bposy + frame*eposy)//15
+    if not card == None:
+        simulatecard(xpos, ypos, card)

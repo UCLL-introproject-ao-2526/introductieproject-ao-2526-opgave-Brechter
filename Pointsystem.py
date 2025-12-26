@@ -13,11 +13,10 @@ def AddPoints(card, Points=0, Aces=0):
     return Points, Aces
     
 def TotalPoints(Score, Aces):
+    Score += Aces
     while Aces > 0:
-        if 21 - Score >= 11:
-            Score += 11
-        else:
-            Score += 1
+        if Score <= 11:
+            Score += 10
         Aces -= 1
     if Score > 21 and Score != 100:
         return -1
@@ -26,9 +25,6 @@ def TotalPoints(Score, Aces):
     
 def CompareScores(Player, Dealer): #dealerblackjack = -2, loss = -1, tie = 0, win = 1, blackjack = 2
     if Player == 21:
-        return 3, Dealerbj(Dealer)
+        return 3, Dealer == 21
     else:
-        return int(Player >= Dealer) + int(Player > Dealer), Dealerbj(Dealer)
-    
-def Dealerbj(Dealer):
-    return Dealer == 21
+        return int(Player >= Dealer) + int(Player > Dealer), Dealer == 21
