@@ -273,14 +273,15 @@ def play():
 
         #3 seconds after the game ends, the endscreen will appear
         if game_end and frame > 180:
-            gamestate, dblackjack = CompareScores(phand.score, dhand.score)
+            gamestate = CompareScores(phand.score, dhand.score)
+            dblackjack = dhand.score == 21
             if gamestate == 0:
                 losescreen = True
             elif gamestate == 1:
                 tiedscreen = True
             else:
                 winscreen = True
-            Payout(gamestate, dblackjack)
+            Payout(gamestate, dblackjack, insur)
             if wallet.amount == 0:
                 losescreen = False
                 deadscreen = True

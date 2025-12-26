@@ -4,8 +4,8 @@ from Pointsystem import *
 from Globals import *
 
 SUITS = ["h", "d", "c", "s"]
-NUMBERS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"]
-
+#NUMBERS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"]
+NUMBERS = ["A", "T", "J", "Q", "K"]
 class Card:
     def __init__(self, suit, number, revealed = True):
         self.__suit = suit
