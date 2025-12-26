@@ -66,6 +66,7 @@ def drawgame(active, betting):
     global ingame
     global dcardanimation
     global pcardanimation
+    global prevent_bet
     button_list = []
 
     #startscreen
@@ -79,13 +80,19 @@ def drawgame(active, betting):
     else:
 
         #setting up the standard text during the game
-        wallettext = FONT_SMALL.render(f'Wallet: {wallet.amount}', True, TEXT_COLOR)
-        screen.blit(wallettext, (10, 10))
-        betamounttext = FONT_SMALL.render(f'Bet: {table.amount}', True, TEXT_COLOR) 
-        screen.blit(betamounttext, (10, 30))
+        wallettext = FONT_SMALL.render(f'{wallet.amount}', True, TEXT_COLOR)
+        screen.blit(wallettext, (35, 10))
+        money_img = pg.image.load("Card_designs\Money.png")
+        screen.blit(money_img, (10, 10))
+        betamounttext = FONT_SMALL.render(f'{table.amount}', True, TEXT_COLOR) 
+        screen.blit(betamounttext, (35, 50))
+        bet_img = pg.image.load("Card_designs\Money_Bet.png")
+        screen.blit(bet_img, (8, 45))
         if insur:
-            insurancetext = FONT_SMALL.render(f'Insurance: {insurance.amount}', True, TEXT_COLOR) 
-            screen.blit(insurancetext, (10, 50))
+            ins_img = pg.image.load("Card_designs\Insurance.png")
+            screen.blit(ins_img, (8, 75))
+            insurancetext = FONT_SMALL.render(f'{insurance.amount}', True, TEXT_COLOR) 
+            screen.blit(insurancetext, (35, 80))
 
         #the betting menu
         if betting:
@@ -105,6 +112,10 @@ def drawgame(active, betting):
             button_list.append(reset)
             button_list.append(start)
 
+            if prevent_bet:
+                text = FONT_SMALL.render('You must place a bet before playing', True, BUTTON_TEXT_COLOR)
+                screen.blit(text, (292, MIDH+75))
+
         #if the game ends
         elif winscreen:
             screen.fill(WIN_COLOR)
@@ -118,6 +129,10 @@ def drawgame(active, betting):
             screen.fill(TIED_COLOR)
             endtext = FONT_BIG.render("IT'S A TIE", True, TEXT_COLOR)  
             screen.blit(endtext, (MIDW-240, MIDH-50))
+        elif deadscreen:
+            screen.fill(DEAD_COLOR)
+            endtext = FONT_BIG.render("YOU'RE BROKE", True, LOSE_COLOR)
+            screen.blit(endtext, (65, MIDH-50))
 
         #during the game itself
         else:
@@ -191,6 +206,7 @@ def play():
         global losescreen
         global winscreen
         global tiedscreen
+        global deadscreen
         global insurask
         global insur
         global playerdead
@@ -199,8 +215,9 @@ def play():
         global ingame
         global pcardanimation
         global dcardanimation
+        global prevent_bet
         animation = dcardanimation or pcardanimation or setupanimation
-        endscreen = winscreen or tiedscreen or losescreen
+        endscreen = winscreen or tiedscreen or losescreen or deadscreen
         button_list = drawgame(playing, betting)
         
         if setupanimation and frame > 30:
@@ -264,6 +281,9 @@ def play():
             else:
                 winscreen = True
             Payout(gamestate, dblackjack)
+            if wallet.amount == 0:
+                losescreen = False
+                deadscreen = True
             frame = 0
             game_end = False
 
@@ -275,6 +295,8 @@ def play():
             phand.empty()
             betting = True
             setupdealt = 0
+            if deadscreen:
+                run = False
 
 
 
@@ -303,11 +325,15 @@ def play():
                     if button_list[1].collidepoint(event.pos):
                         BetReset()
                     if button_list[2].collidepoint(event.pos):
-                        game_end = False
-                        betting = False
+                        if table.amount == 0:
+                            prevent_bet = True
+                        else:
+                            prevent_bet = False
+                            game_end = False
+                            betting = False
 
-                        #at the end of the betting stage, the cards will be prepared
-                        setupanimation = True
+                            #at the end of the betting stage, the cards will be prepared
+                            setupanimation = True
 
                 #now it's the player's turn
                 elif playing and not betting:

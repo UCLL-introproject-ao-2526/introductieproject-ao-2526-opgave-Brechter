@@ -17,7 +17,7 @@ class Bundle:
         self.amount += money
 
 #dit zijn de relevante bundles
-wallet = Bundle(100)
+wallet = Bundle(1000)
 table = Bundle(0)
 insurance = Bundle(0)
 
