@@ -290,7 +290,8 @@ def play():
         #5 seconds after the endscreen a new game will begin
         if endscreen and frame > 300:
             frame = 0
-            winscreen, tiedscreen, losescreen = False, False, False
+            winscreen, tiedscreen, losescreen, insur = False, False, False, False
+            insurance.amount = 0
             dhand.empty()
             phand.empty()
             betting = True
