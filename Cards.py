@@ -50,14 +50,28 @@ class Deck:
         self.__cards = makenewdeck(decks)
         rd.shuffle(self.__cards)
         self.__decks = decks
+        self.__count = 0
+
+    @property
+    def count(self):
+        return self.__count
+
+    def cardcountupdate(self, card):
+        if card.revealed:
+            if card.number in ["A", "T", 'J', 'Q', 'K']:
+                self.__count -= 1
+            elif card.number in ["2", "3", "4", "5", "6"]:
+                self.__count += 1
 
     def draw(self, revealed = True):
         if not len(self.__cards) == 0:
             card = self.__cards.pop(-1)
             card.revealed = revealed
+            self.cardcountupdate(card)
             return card
         else:
             self.__cards = makenewdeck(self.__decks)
+            self.__count = 0
             rd.shuffle(self.__cards)
             return self.draw(revealed)
     

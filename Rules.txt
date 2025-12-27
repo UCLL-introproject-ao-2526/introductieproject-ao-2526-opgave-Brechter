@@ -1,0 +1,25 @@
+=General
+The aim of the game is to get a score of 21 with the cards you pull.
+The numbers have their own value, 10 through king are all worth 10 and the ace is 1 or 11.
+You play against the dealer and the one with the highest score wins, but score over 21 result in a loss.
+
+=Gameplay
+Both you and the dealer will start the round with two cards, the dealer's second card won't be revealed yet.
+To pull a card from the deck, you press the 'hit' button, if you want to stop your turn you can press 'stand'.
+Your turn will automatically end if you go over 21 or if you have 7 cards (which wins you the game).
+The dealer will start his turn by turning over his second card, then he'll start pulling cards until he exceeds 17.
+
+=Betting
+You can bet any multiple of 20 coins for every game, pressing bet will add 20 to your total.
+You can always reset your bet amount to 0, but you have to bet something to start the game.
+If you win you get your money back twice, tieing just gets you your money back and losing loses your money.
+A blackjack (21) will get you your money back 2.5 times.
+
+=Insurance
+If the dealer's first card is an ace, you can buy insurance before starting the game, this is half your bet.
+If the dealer gets a blackjack you will get your insurance back twice, if not you'll lose it.
+
+=Card count
+If you turn on cheats, you'll see a card count. 
+If that count is high, you're best of to bet high. if the count is low, you better bet low.
+The count will increase with a number 2 through 6 and decrease with 10 through ace.

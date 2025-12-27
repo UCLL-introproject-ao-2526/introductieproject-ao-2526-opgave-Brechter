@@ -24,7 +24,7 @@ def dealerplay(dealerhand):
 def drawcards(phand, dhand, plinvis=False, dlinvis=False):
         if len(phand.cards) > 0:
             plen = len(phand.cards)
-            pxpos = HAND_POS_X_EVEN if plen %2 == 0 else HAND_POS_X_ODD
+            pxpos = HAND_POS_X_EVEN if plen%2 == 0 else HAND_POS_X_ODD
             if plen%2==1:
                 for i in range(plen - 1):
                     simulatecard(pxpos[i], PHAND_POS_Y, phand.cards[i])
@@ -67,14 +67,45 @@ def drawgame(active, betting):
     global dcardanimation
     global pcardanimation
     global prevent_bet
+    global cheats_on
+    global blackjack
+    global show_rules
     button_list = []
 
     #startscreen
-    if not active:
-        play = pg.draw.circle(screen, color=BUTTON_COLOR, radius=75, center=(MIDW, MIDH))
+    if show_rules:
+        back = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(50, 50))
+        backtext = FONT_SMALL.render('BACK', True, BUTTON_TEXT_COLOR)
+        backcenter = backtext.get_rect(center=(50, 50))
+        screen.blit(backtext, backcenter)
+        button_list.append(back)
+        ruleswritten(screen)
+    elif not active:
+        pg.draw.ellipse(screen, '#FFFFFF', (MIDW-150, MIDH//2-75, 300, 150))
+        logo = pg.image.load('Card_designs\logo.png')
+        logocenter = logo.get_rect(center = (MIDW, MIDH//2))
+        screen.blit(logo, logocenter)
+        play = pg.draw.circle(screen, color=BUTTON_COLOR, radius=75, center=(MIDW, 5*HEIGHT//8))
         playtext = FONT.render('PLAY', True, BUTTON_TEXT_COLOR)
-        screen.blit(playtext, (MIDW-56, MIDH-18))
+        screen.blit(playtext, (MIDW-56, 5*HEIGHT//8-18))
         button_list.append(play)
+        if not cheats_on:
+            cheats = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(WIDTH-50, 50))
+            cheatsignal = FONT_TINY.render('OFF', True, BUTTON_TEXT_COLOR)
+            screen.blit(cheatsignal, (WIDTH-65, 52))
+        else:
+            cheats = pg.draw.circle(screen, color=TIED_COLOR, radius=40, center=(WIDTH-50, 50))
+            cheatsignal = FONT_TINY.render('ON', True, BUTTON_TEXT_COLOR)
+            screen.blit(cheatsignal, (WIDTH-62, 52))
+        cheattext = FONT_TINY.render('CHEATS', True, BUTTON_TEXT_COLOR)
+        screen.blit(cheattext, (WIDTH-78, 35))
+        button_list.append(cheats)
+        rules = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(50, 50))
+        ruletext = FONT_SMALL.render('RULES', True, BUTTON_TEXT_COLOR)
+        rulecenter = ruletext.get_rect(center=(50, 50))
+        screen.blit(ruletext, rulecenter)
+        button_list.append(rules)
+
     
     #once the game starts, you go to the betting menu
     else:
@@ -93,6 +124,10 @@ def drawgame(active, betting):
             screen.blit(ins_img, (8, 75))
             insurancetext = FONT_SMALL.render(f'{insurance.amount}', True, TEXT_COLOR) 
             screen.blit(insurancetext, (35, 80))
+        if cheats_on:
+            cardcounttext = FONT_SMALL.render(f"Card count: {deck.count}", True, TEXT_COLOR)
+            block = cardcounttext.get_rect(topright=(WIDTH-10, 10))
+            screen.blit(cardcounttext, block)
 
         #the betting menu
         if betting:
@@ -116,11 +151,18 @@ def drawgame(active, betting):
                 text = FONT_SMALL.render('You must place a bet before playing', True, BUTTON_TEXT_COLOR)
                 screen.blit(text, (292, MIDH+75))
 
+        
         #if the game ends
         elif winscreen:
             screen.fill(WIN_COLOR)
             endtext = FONT_BIG.render('YOU WON', True, TEXT_COLOR)
-            screen.blit(endtext, (MIDW-250, MIDH-50))
+            if blackjack:
+                blackjacktext = FONT.render("BLACKJACK!", True, TEXT_COLOR)
+                midbjt = blackjacktext.get_rect(center = (MIDW, MIDH+30))
+                screen.blit(endtext, (MIDW-250, MIDH-80))
+                screen.blit(blackjacktext, midbjt)
+            else:
+                screen.blit(endtext, (MIDW-250, MIDH-50))
         elif losescreen:
             screen.fill(LOSE_COLOR)
             endtext = FONT_BIG.render('YOU LOST', True, TEXT_COLOR)    
@@ -128,7 +170,13 @@ def drawgame(active, betting):
         elif tiedscreen:
             screen.fill(TIED_COLOR)
             endtext = FONT_BIG.render("IT'S A TIE", True, TEXT_COLOR)  
-            screen.blit(endtext, (MIDW-240, MIDH-50))
+            if blackjack:
+                blackjacktext = FONT.render("BLACKJACK!", True, TEXT_COLOR)
+                midbjt = blackjacktext.get_rect(center = (MIDW, MIDH+30))
+                screen.blit(endtext, (MIDW-250, MIDH-80))
+                screen.blit(blackjacktext, midbjt)
+            else:
+                screen.blit(endtext, (MIDW-250, MIDH-50))
         elif deadscreen:
             screen.fill(DEAD_COLOR)
             endtext = FONT_BIG.render("GAME OVER", True, LOSE_COLOR)
@@ -216,6 +264,9 @@ def play():
         global pcardanimation
         global dcardanimation
         global prevent_bet
+        global cheats_on
+        global blackjack
+        global show_rules
         animation = dcardanimation or pcardanimation or setupanimation
         endscreen = winscreen or tiedscreen or losescreen or deadscreen
         button_list = drawgame(playing, betting)
@@ -260,6 +311,7 @@ def play():
         #the dealer's turn begins with him flipping his card and every second he'll draw a new one until he decides to end the game
         if dealerturn_init and frame > 59:
             dhand.cards[0].reveal()
+            deck.cardcountupdate(dhand.cards[0])
             frame = 0
             dealerturn_init = False
             dealerturn = True
@@ -275,6 +327,8 @@ def play():
         if game_end and frame > 180:
             gamestate = CompareScores(phand.score, dhand.score)
             dblackjack = dhand.score == 21
+            if phand.score == 21:
+                blackjack = True
             if gamestate == 0:
                 losescreen = True
             elif gamestate == 1:
@@ -291,7 +345,7 @@ def play():
         #5 seconds after the endscreen a new game will begin
         if endscreen and frame > 300:
             frame = 0
-            winscreen, tiedscreen, losescreen, insur = False, False, False, False
+            winscreen, tiedscreen, losescreen, insur, blackjack = False, False, False, False, False
             insurance.amount = 0
             dhand.empty()
             phand.empty()
@@ -314,11 +368,18 @@ def play():
             if event.type == pg.MOUSEBUTTONUP:
                     
                 #startscreen
-                if not playing:
+                if show_rules:
+                    if button_list[0].collidepoint(event.pos):
+                        show_rules = False
+                elif not playing:
                     if button_list[0].collidepoint(event.pos):
                         betting = True
                         playing = True
                         button_list = drawgame(playing, betting)
+                    if button_list[1].collidepoint(event.pos):
+                        cheats_on = not cheats_on
+                    if button_list[2].collidepoint(event.pos):
+                        show_rules = True
                     
                 #betting stage
                 elif playing and betting:
@@ -351,6 +412,7 @@ def play():
                             ingame = False
                             frame = 0
                             dhand.cards[0].reveal()
+                            deck.cardcountupdate(dhand.cards[0])
                             if insurask:
                                 insurask = False
                         if insurask:
