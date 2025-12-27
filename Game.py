@@ -143,9 +143,18 @@ def drawgame(active, betting):
             starttext = FONT_SMALL.render('START', True, BUTTON_TEXT_COLOR)
             screen.blit(starttext, (MIDW+70, MIDH-9))
 
+            back = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(MIDW, HEIGHT-50))
+            gobacktext = FONT_TINY.render('BACK', True, BUTTON_TEXT_COLOR)
+            tomenutext = FONT_TINY.render('TO MENU', True, BUTTON_TEXT_COLOR)
+            gbtcenter = gobacktext.get_rect(center = (MIDW, HEIGHT-60))
+            tomenucenter = tomenutext.get_rect(center = (MIDW, HEIGHT-42))
+            screen.blit(gobacktext, gbtcenter)
+            screen.blit(tomenutext, tomenucenter)
+
             button_list.append(bet)
             button_list.append(reset)
             button_list.append(start)
+            button_list.append(back)
 
             if prevent_bet:
                 text = FONT_SMALL.render('You must place a bet before playing', True, BUTTON_TEXT_COLOR)
@@ -218,7 +227,7 @@ def drawgame(active, betting):
                     
 
                     #if the first card is an ace the player will be asked to buy insurance, if the dealer gets a blackjack, the player will get double the insurance back
-                    if insurask:
+                    if insurask and wallet.amount >= table.amount//2:
                         ins_y = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(50, MIDH))
                         ins_n = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(WIDTH//6, MIDH))
                         yestext = FONT_SMALL.render('YES', True, BUTTON_TEXT_COLOR)
@@ -394,20 +403,20 @@ def play():
                             prevent_bet = False
                             game_end = False
                             betting = False
-
-                            #at the end of the betting stage, the cards will be prepared
                             setupanimation = True
+                    if button_list[3].collidepoint(event.pos):
+                        playing = False
 
                 #now it's the player's turn
-                elif playing and not betting:
-                    if not playerdead and len(phand.cards) < 7 and not animation:
-                        if button_list[0].collidepoint(event.pos) and not (dealerturn_init or dealerturn) and frame > 15:
+                elif playing and not betting and not endscreen:
+                    if not playerdead and len(phand.cards) < 7 and not animation and not (dealerturn_init or dealerturn or game_end):
+                        if button_list[0].collidepoint(event.pos) and frame > 15:
                             phand.retrieve()
                             pcardanimation = True
                             frame = 0
                             if insurask:
                                 insurask = False
-                        if button_list[1].collidepoint(event.pos) and not (dealerturn_init or dealerturn):
+                        if button_list[1].collidepoint(event.pos):
                             dealerturn_init = True
                             ingame = False
                             frame = 0
