@@ -89,7 +89,7 @@ def drawgame(active, betting):
         button_list.append(back)
         ruleswritten(screen)
     elif not active:
-        pg.draw.ellipse(screen, '#FFFFFF', (MIDW-150, MIDH//2-75, 300, 150))
+        pg.draw.ellipse(screen, '#FFFFFF', (MIDW-148, MIDH//2-73, 296, 146))
         logo = pg.image.load('Card_designs/logo.png')
         logocenter = logo.get_rect(center = (MIDW, MIDH//2))
         screen.blit(logo, logocenter)
@@ -261,6 +261,16 @@ def drawgame(active, betting):
                         screen.blit(instext, (40, MIDH-80))
                         button_list.append(ins_y)
                         button_list.append(ins_n)
+                    if insur and coinanimation:
+                        for i in range(len(coins_in_anim)):
+                            coins_in_anim[i] = Coinanimation(screen, coins_in_anim[i], x=50)
+                        while i < len(coins_in_anim):
+                            if coins_in_anim[i][1] > 15:
+                                coins_in_anim.pop(i)
+                                i -= 1
+                            i += 1
+                        coinanimation = len(coins_in_anim) > 0
+                    
     Music_button_img = pg.image.load(f"Card_designs/Music_{'on' if music_on else 'off'}.png")
     Mbbr = Music_button_img.get_rect(bottomright = (WIDTH-8, HEIGHT-8))
     screen.blit(Music_button_img, Mbbr)
@@ -440,7 +450,7 @@ def play():
                         BetAdd()
                         if wallet.amount >= 20:
                             coinanimation = True
-                            coins_in_anim.append((pg.image.load("Card_designs/Money.png"), 0))
+                            coins_in_anim.append((pg.image.load("Card_designs/Coin.png"), 0))
                     if button_list[1].collidepoint(event.pos):
                         BetReset()
                     if button_list[2].collidepoint(event.pos):
@@ -475,6 +485,9 @@ def play():
                             if button_list[2].collidepoint(event.pos):
                                 insurask = False
                                 insur = Betinsurance()
+                                if wallet.amount >= table.amount//2:
+                                    coinanimation = True
+                                    coins_in_anim.append((pg.image.load("Card_designs/Coin.png"), 0))
                             if button_list[3].collidepoint(event.pos):
                                 insurask = False
 

@@ -184,6 +184,8 @@ In deze versie heb ik nog een icoontje gedesigned voor de card count dat nu ook 
 
 ## 28-12-2025
 
+Vandaag heb ik voornamelijk muziek toegevoegd, en daarbij heb ik nog wat leuke animations geïmplementeerd. Het wordt echt wel tijd om het project af te ronden. Waarschijnlijk zijn alle commits hierna wel Pre-releases en uiteindelijk de full release.
+
 ### Beta 1.5
 
 Vandaag heb ik muziek toegevoegd aan mijn game, Smooth jazz leek me zeer toepasselijk want dat geeft een rustige casinosfeer. Natuurlijk heb ik ook een mechanic toegevoegd om die uit te zetten en dus ook op piskel nog 2 pictogrammetjes toegevoegd. Wel bleek dat je images niet als knoppen kunt toevoegen, dus heb ik achter de image een rectangle getekend in de kleur van de achtergrond. Ik heb deze dan sowieso op het einde van de lijst gezet en altijd actief, zodat ik gewoon button_list[-1].collidepoint(event.pos) kon doen op elk moment.
@@ -193,3 +195,9 @@ Vandaag heb ik muziek toegevoegd aan mijn game, Smooth jazz leek me zeer toepass
 In deze commit heb ik nog een animation toegevoegd voor de muntjes als je een bet plaatst, het is de bedoeling om daar nog een ander prentje voor te zetten en dit ook te doen voor insurance, maar voor nu werkt het.
 
 Daarnaast heb ik nog wat backslashes vervangen voor slashes en mijn logboek geüpdated.
+
+### Beta 1.5.2
+
+Wat ik gezegd heb dat ik nog wou in Beta 1.5.2 heb ik gedaan, ik heb mijn coinsprite gebaseert op de muntjes van mario bros (met de streep in het midden), voor de rest verliep alles redelijk vlot.
+
+Er waren ook nog enkele witte pixels aan de buitenkand van het logo, die heb ik weggedaan door de witte ellips 2px kleiner te maken aan elke kant
