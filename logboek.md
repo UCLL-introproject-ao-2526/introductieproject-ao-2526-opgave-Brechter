@@ -1,4 +1,4 @@
-## Algemeen
+# Algemeen
 
 Mijn idee voor dit spel is om het zo hard mogelijk te laten lijken op de versie van het casino. Ik ben deze zomer voor het plezier in Sofia, Bulgarije naar een casino gegaan en heb daar wat geblackjacket dus ik heb nog wel een goed idee van de regels, en zou ze zo ook graag implementeren.
 
@@ -205,3 +205,7 @@ Er waren ook nog enkele witte pixels aan de buitenkand van het logo, die heb ik 
 ### Beta 1.5.3
 
 Ik heb nog een paar QOL-veranderingen gedaan zoals bet_prevent afzetten eens je op BET drukt en andere kleine details. Maar wat ik ook heb toegevoegd is een coinfest als je een ronde wint en dubbel coinfest bij een blackjack. dat betekent dat op het endscreen gewoon heel veel muntjes verschijnen. Wel volledig dezelfde animatie als bij de BET en insurance maar het maakt winnen wel veel leuker. Ik liet de muntjes op een random x-waarde starten, wat niet heel gemakkelijk was, maar snel op te lossen met een nieuwe global lijst.
+
+### Pre-release 2
+
+Hier heb ik een soft-lock als je 10 coins hebt opgelost, en een bug dat de muziek niet vanaf het begin begint. Kleine update, weinig werk, maar we zijn nu wel echt klaar voor de pre-release stage.

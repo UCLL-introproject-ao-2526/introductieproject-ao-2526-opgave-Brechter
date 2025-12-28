@@ -408,7 +408,7 @@ def play():
             else:
                 winscreen = True
             Payout(gamestate, dblackjack, insur)
-            if wallet.amount == 0:
+            if wallet.amount < 20:
                 losescreen = False
                 deadscreen = True
                 pg.mixer.music.unload()
@@ -520,6 +520,7 @@ def play():
     #end of loop   
         frame +=1
         pg.display.flip()
+    pg.mixer.music.unload()
     pg.quit()
 
 
