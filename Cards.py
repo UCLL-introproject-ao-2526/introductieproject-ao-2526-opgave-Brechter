@@ -4,8 +4,8 @@ from Pointsystem import *
 from Globals import *
 
 SUITS = ["h", "d", "c", "s"]
-NUMBERS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"]
-
+#NUMBERS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"]
+NUMBERS = ["3"]
 class Card:
     def __init__(self, suit, number, revealed = True):
         self.__suit = suit
@@ -127,6 +127,8 @@ class Hand:
         scor = TotalPoints(self.points, self.aces)
         if len(self.cards) < 7 or scor == -1:
             return scor
+        elif len(self.cards) == 7 and scor == 21:
+            return 21
         else:
             return 100
     

@@ -27,7 +27,14 @@ tracks = ["Tracks/smooth-evening-saxophone-jazz-background-music-for-youtube-345
           "Tracks/smooth-instrumental-jazz-music-360498.mp3", 
           "Tracks/smooth-jazz-388604.mp3",
           "Tracks/smooth-jazz-cafe-session-1-306314.mp3",
-          "Tracks/smooth-jazz-saxophone-solo-with-a-lofi-vibe-253950.mp3"]
+          "Tracks/smooth-jazz-saxophone-solo-with-a-lofi-vibe-253950.mp3",
+          "Tracks/background-jazz-golden-whisper-358520.mp3",
+          "Tracks/jazz-cafe-background-348913.mp3",
+          "Tracks/jazz-lounge-relaxing-background-music-412597.mp3",
+          "Tracks/night-jazz-beats-10039.mp3",
+          "Tracks/relax-jazz-velvet-rain-357852.mp3",
+          "Tracks/royalty-free-jazz-coastal-melody-363473.mp3",
+          "Tracks/smooth-coffee-254076.mp3"]
 coins_in_anim = []
 coinxs = []
 

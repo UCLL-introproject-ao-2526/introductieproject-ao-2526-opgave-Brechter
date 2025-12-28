@@ -24,8 +24,10 @@ def TotalPoints(Score, Aces):
         return Score
     
 def CompareScores(Player, Dealer):
-    if Player == 21:
+    if Player == 21 and Dealer != 21:
         return 3
+    elif Dealer == 21 and Player != 21:
+        return 0
     else:
         if Player != -1:
             return int(Player >= Dealer) + int(Player > Dealer)

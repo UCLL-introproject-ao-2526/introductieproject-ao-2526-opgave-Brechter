@@ -192,10 +192,12 @@ def drawgame(active, betting):
             if blackjack:
                 blackjacktext = FONT.render("BLACKJACK!", True, TEXT_COLOR)
                 midbjt = blackjacktext.get_rect(center = (MIDW, MIDH+30))
-                screen.blit(endtext, (MIDW-250, MIDH-80))
+                etmid = endtext.get_rect(center = (MIDW, MIDH-30))
+                screen.blit(endtext, etmid)
                 screen.blit(blackjacktext, midbjt)
             else:
-                screen.blit(endtext, (MIDW-250, MIDH-50))
+                etmid = endtext.get_rect(center = (MIDW, MIDH))
+                screen.blit(endtext, etmid)
             for i in range(len(coins_in_anim)):
                 coins_in_anim[i] = Coinanimation(screen, coins_in_anim[i], x=coinxs[i], y=MIDH-(21+blackjack*30))
             while i < len(coins_in_anim):
@@ -208,21 +210,25 @@ def drawgame(active, betting):
         elif losescreen:
             screen.fill(LOSE_COLOR)
             endtext = FONT_BIG.render('YOU LOST', True, TEXT_COLOR)    
-            screen.blit(endtext, (MIDW-260, MIDH-50))
+            etmid = endtext.get_rect(center = (MIDW, MIDH))
+            screen.blit(endtext, etmid)
         elif tiedscreen:
             screen.fill(TIED_COLOR)
             endtext = FONT_BIG.render("IT'S A TIE", True, TEXT_COLOR)  
             if blackjack:
-                blackjacktext = FONT.render("BLACKJACK!", True, TEXT_COLOR)
+                blackjacktext = FONT.render("BUT A BLACKJACK TIE", True, TEXT_COLOR)
+                etmid = endtext.get_rect(center = (MIDW, MIDH-30))
                 midbjt = blackjacktext.get_rect(center = (MIDW, MIDH+30))
-                screen.blit(endtext, (MIDW-250, MIDH-80))
+                screen.blit(endtext, etmid)
                 screen.blit(blackjacktext, midbjt)
             else:
-                screen.blit(endtext, (MIDW-250, MIDH-50))
+                etmid = endtext.get_rect(center = (MIDW, MIDH))
+                screen.blit(endtext, etmid)
         elif deadscreen:
             screen.fill(DEAD_COLOR)
             endtext = FONT_BIG.render("GAME OVER", True, LOSE_COLOR)
-            screen.blit(endtext, (MIDW-310, MIDH-50))
+            etmid = endtext.get_rect(center = (MIDW, MIDH))
+            screen.blit(endtext, etmid)
 
         #during the game itself
         else:
@@ -336,7 +342,7 @@ def play():
 
         if end_music and not deadscreen:
             end_music = False
-            track_number = rd.randint(0, 4)
+            track_number = rd.randint(0, len(tracks)-1)
             while track_number == just_played:
                 track_number = rd.randint(0, 4)
             just_played = track_number
@@ -375,7 +381,7 @@ def play():
 
 
         #if the player has 7 cards, the dealer automatically begins
-        if phand.score == 100 and frame > 59 and not (dealerturn_init or dealerturn or game_end or endscreen):
+        if len(phand.cards) == 7 and frame > 59 and not (dealerturn_init or dealerturn or game_end or endscreen):
             ingame = False
             frame = 0
             dealerturn_init = True
@@ -503,7 +509,6 @@ def play():
                             ingame = False
                             frame = 0
                             dhand.cards[0].reveal()
-                            deck.cardcountupdate(dhand.cards[0])
                             if insurask:
                                 insurask = False
                         if insurask:

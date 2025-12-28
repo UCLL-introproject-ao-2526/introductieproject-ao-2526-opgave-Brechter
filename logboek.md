@@ -209,3 +209,9 @@ Ik heb nog een paar QOL-veranderingen gedaan zoals bet_prevent afzetten eens je 
 ### Pre-release 2
 
 Hier heb ik een soft-lock als je 10 coins hebt opgelost, en een bug dat de muziek niet vanaf het begin begint. Kleine update, weinig werk, maar we zijn nu wel echt klaar voor de pre-release stage.
+
+### Pre-release 3
+
+Stiekem heb ik nog een paar extra liedjes toegevoegd ook al is het de pre-release en mogen er dus niet echt nieuwe dingen toegevoegd worden (gedownload van pixabay btw). Daarnaast het ik ervoor gezorgd dat als beide spelers een blackjack hebben, dat er een gelijkspel is. Als je 7 kaarten hebt en daarmee 21 win je niet zomaar, maar krijg je nu dus ook een blackjack, 7 kaarten is nog steeds wel meer waard dan 20 punten, maar niet meer dan een dealerblackjack.
+
+Ook heb ik nu de endscreentekst gecentraliseerd, waardoor het coinfest er mooier uitziet, en ik heb IT'S A TIE met BLACKJACK ook aangepast naar IT'S A TIE, BUT A BLACKJACK TIE.
