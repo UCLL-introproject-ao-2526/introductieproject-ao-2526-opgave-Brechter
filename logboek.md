@@ -177,3 +177,7 @@ Daarnaast heb ik mijn logboek ook eindelijk van een lokaal .txt-file naar een .m
 Omdat het rood van het logo niet hetzelfde was als het rood van de knoppen en het verliesscherm, en die laatste twee veel makkelijker aan te passen waren heb ik dus de knoppen en het verliesscherm dezelfde tint rood gemaakt als in het logo.
 
 En tot slot heb ik ook een "back to menu" knop toegevoegd aan het betting-scherm zodat je de regels nog eens kan lezen of de cheats aan of uit kan zetten
+
+### Beta 1.4.2
+
+In deze versie heb ik nog een icoontje gedesigned voor de card count dat nu ook rechts vaststaat. Omdat die wat lelijk was op WIDTH-10 en mooier op WIDTH-8 heb ik ook alle andere icoontjes op afstand 8 ipv 10 van de rand van het scherm gezet. Tot slot heb ik alle backslashes naar forwardslashes veranderd zodat linux-gebruikers ook mijn programma kunnen gebruiken.

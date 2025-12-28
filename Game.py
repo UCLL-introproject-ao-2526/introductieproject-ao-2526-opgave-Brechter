@@ -82,7 +82,7 @@ def drawgame(active, betting):
         ruleswritten(screen)
     elif not active:
         pg.draw.ellipse(screen, '#FFFFFF', (MIDW-150, MIDH//2-75, 300, 150))
-        logo = pg.image.load('Card_designs\logo.png')
+        logo = pg.image.load('Card_designs/logo.png')
         logocenter = logo.get_rect(center = (MIDW, MIDH//2))
         screen.blit(logo, logocenter)
         play = pg.draw.circle(screen, color=BUTTON_COLOR, radius=75, center=(MIDW, 5*HEIGHT//8))
@@ -112,21 +112,24 @@ def drawgame(active, betting):
 
         #setting up the standard text during the game
         wallettext = FONT_SMALL.render(f'{wallet.amount}', True, TEXT_COLOR)
-        screen.blit(wallettext, (35, 10))
-        money_img = pg.image.load("Card_designs\Money.png")
-        screen.blit(money_img, (10, 10))
+        screen.blit(wallettext, (33, 8))
+        money_img = pg.image.load("Card_designs/Money.png")
+        screen.blit(money_img, (8, 8))
         betamounttext = FONT_SMALL.render(f'{table.amount}', True, TEXT_COLOR) 
         screen.blit(betamounttext, (35, 50))
-        bet_img = pg.image.load("Card_designs\Money_Bet.png")
+        bet_img = pg.image.load("Card_designs/Money_Bet.png")
         screen.blit(bet_img, (8, 45))
         if insur:
-            ins_img = pg.image.load("Card_designs\Insurance.png")
+            ins_img = pg.image.load("Card_designs/Insurance.png")
             screen.blit(ins_img, (8, 75))
             insurancetext = FONT_SMALL.render(f'{insurance.amount}', True, TEXT_COLOR) 
             screen.blit(insurancetext, (35, 80))
         if cheats_on:
-            cardcounttext = FONT_SMALL.render(f"Card count: {deck.count}", True, TEXT_COLOR)
-            block = cardcounttext.get_rect(topright=(WIDTH-10, 10))
+            countimg = pg.image.load("Card_designs/count.png")
+            cimgtr = countimg.get_rect(topright=(WIDTH-8, 8))
+            screen.blit(countimg, cimgtr)
+            cardcounttext = FONT_SMALL.render(f"{deck.count}", True, TEXT_COLOR)
+            block = cardcounttext.get_rect(topright=(WIDTH-35, 10))
             screen.blit(cardcounttext, block)
 
         #the betting menu
@@ -193,7 +196,7 @@ def drawgame(active, betting):
 
         #during the game itself
         else:
-            deckimg = pg.image.load("Card_designs\Back_card.png")
+            deckimg = pg.image.load("Card_designs/Back_card.png")
             screen.blit(deckimg, (DECK_POS_X, DECK_POS_Y))
             if pcardanimation:
                 drawcards(phand, dhand, True)
@@ -212,8 +215,8 @@ def drawgame(active, betting):
                     dscoretext = FONT_SMALL.render(f"Dealer's score: {dhand.score if dhand.score != -1 else "Dead"}", True, TEXT_COLOR)
                 else:
                     dscoretext = FONT_SMALL.render(f"Dealer's score: Winner! (7 cards)", True, TEXT_COLOR)
-                screen.blit(pscoretext, (10, HEIGHT-50))
-                screen.blit(dscoretext, (10, HEIGHT-30))
+                screen.blit(pscoretext, (8, HEIGHT-45))
+                screen.blit(dscoretext, (8, HEIGHT-25))
                 if ingame:
                     hit = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(WIDTH//6, PHAND_POS_Y))
                     hittext = FONT_SMALL.render('HIT', True, BUTTON_TEXT_COLOR)

@@ -143,9 +143,9 @@ def simulatecard(xpos, ypos, card):
     xpos = xpos - 33
     ypos = ypos - 48
     if card.revealed:
-        card_img = pg.image.load(f"Card_designs\{card.name}.png")
+        card_img = pg.image.load(f"Card_designs/{card.name}.png")
     else:
-        card_img = pg.image.load("Card_designs\Back_card.png")
+        card_img = pg.image.load("Card_designs/Back_card.png")
     screen.blit(card_img, (xpos, ypos))
 
 def cardanimation(phand, dhand, frame, pcardanim):
