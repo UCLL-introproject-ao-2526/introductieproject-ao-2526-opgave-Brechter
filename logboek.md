@@ -201,3 +201,7 @@ Daarnaast heb ik nog wat backslashes vervangen voor slashes en mijn logboek geü
 Wat ik gezegd heb dat ik nog wou in Beta 1.5.2 heb ik gedaan, ik heb mijn coinsprite gebaseert op de muntjes van mario bros (met de streep in het midden), voor de rest verliep alles redelijk vlot.
 
 Er waren ook nog enkele witte pixels aan de buitenkand van het logo, die heb ik weggedaan door de witte ellips 2px kleiner te maken aan elke kant
+
+### Beta 1.5.3
+
+Ik heb nog een paar QOL-veranderingen gedaan zoals bet_prevent afzetten eens je op BET drukt en andere kleine details. Maar wat ik ook heb toegevoegd is een coinfest als je een ronde wint en dubbel coinfest bij een blackjack. dat betekent dat op het endscreen gewoon heel veel muntjes verschijnen. Wel volledig dezelfde animatie als bij de BET en insurance maar het maakt winnen wel veel leuker. Ik liet de muntjes op een random x-waarde starten, wat niet heel gemakkelijk was, maar snel op te lossen met een nieuwe global lijst.

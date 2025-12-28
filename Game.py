@@ -74,6 +74,7 @@ def drawgame(active, betting):
     global music_on
     global coinanimation
     global coins_in_anim
+    global coinxs
     button_list = []
 
     
@@ -195,6 +196,15 @@ def drawgame(active, betting):
                 screen.blit(blackjacktext, midbjt)
             else:
                 screen.blit(endtext, (MIDW-250, MIDH-50))
+            for i in range(len(coins_in_anim)):
+                coins_in_anim[i] = Coinanimation(screen, coins_in_anim[i], x=coinxs[i], y=MIDH-(21+blackjack*30))
+            while i < len(coins_in_anim):
+                if coins_in_anim[i][1] > 15:
+                    coins_in_anim.pop(i)
+                    coinxs.pop(i)
+                    i -= 1
+                i += 1
+            coinanimation = len(coins_in_anim) > 0
         elif losescreen:
             screen.fill(LOSE_COLOR)
             endtext = FONT_BIG.render('YOU LOST', True, TEXT_COLOR)    
@@ -286,6 +296,7 @@ def play():
     frame = 0
     setupdealt = 0
     end_music = True
+    just_played = -1
 
     #main game loop
     while run:
@@ -317,6 +328,7 @@ def play():
         global music_on
         global coinanimation
         global coins_in_anim
+        global coinxs
         animation = dcardanimation or pcardanimation or setupanimation
         endscreen = winscreen or tiedscreen or losescreen or deadscreen
         button_list = drawgame(playing, betting)
@@ -324,7 +336,11 @@ def play():
 
         if end_music and not deadscreen:
             end_music = False
-            pg.mixer.music.load(rd.choice(tracks))
+            track_number = rd.randint(0, 4)
+            while track_number == just_played:
+                track_number = rd.randint(0, 4)
+            just_played = track_number
+            pg.mixer.music.load(tracks[track_number])
             pg.mixer.music.play()
         
         if setupanimation and frame > 30:
@@ -413,7 +429,13 @@ def play():
             if deadscreen:
                 run = False
 
-
+        if winscreen and frame < 285:
+            coins_in_anim.append((pg.image.load("Card_designs/Coin.png"), 0))
+            coinxs.append(rd.randint(MIDW-250, MIDW+250))
+            if blackjack:
+                coins_in_anim.append((pg.image.load("Card_designs/Coin.png"), 0))
+                coinxs.append(rd.randint(MIDW-250, MIDW+250))
+            coinanimation = True
 
 
 
@@ -447,6 +469,7 @@ def play():
                 #betting stage
                 elif playing and betting:
                     if button_list[0].collidepoint(event.pos):
+                        prevent_bet = False
                         BetAdd()
                         if wallet.amount >= 20:
                             coinanimation = True
@@ -463,6 +486,8 @@ def play():
                             setupanimation = True
                     if button_list[3].collidepoint(event.pos):
                         playing = False
+                        prevent_bet = False
+                        BetReset()
 
                 #now it's the player's turn
                 elif playing and not betting and not endscreen:

@@ -29,6 +29,7 @@ tracks = ["Tracks/smooth-evening-saxophone-jazz-background-music-for-youtube-345
           "Tracks/smooth-jazz-cafe-session-1-306314.mp3",
           "Tracks/smooth-jazz-saxophone-solo-with-a-lofi-vibe-253950.mp3"]
 coins_in_anim = []
+coinxs = []
 
 #colors
 BG_COLOR = "#00A000"

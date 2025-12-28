@@ -51,11 +51,11 @@ def Payout(state, dealerbj=False, insur=False):
         insurance.AddMoney(-insurancebet)
         wallet.AddMoney(2*insurancebet)
 
-def Coinanimation(screen, objfrtuple, x=MIDW):
+def Coinanimation(screen, objfrtuple, x=MIDW, y=MIDH):
     x = x+37
     object, frame = objfrtuple
     if frame <= 15:
-        center = object.get_rect(center = (x, MIDH-(frame*2)))
+        center = object.get_rect(center = (x, y-(frame*2)))
         screen.blit(object, center)
         frame += 1
     return (object, frame)
