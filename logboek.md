@@ -215,3 +215,19 @@ Hier heb ik een soft-lock als je 10 coins hebt opgelost, en een bug dat de muzie
 Stiekem heb ik nog een paar extra liedjes toegevoegd ook al is het de pre-release en mogen er dus niet echt nieuwe dingen toegevoegd worden (gedownload van pixabay btw). Daarnaast het ik ervoor gezorgd dat als beide spelers een blackjack hebben, dat er een gelijkspel is. Als je 7 kaarten hebt en daarmee 21 win je niet zomaar, maar krijg je nu dus ook een blackjack, 7 kaarten is nog steeds wel meer waard dan 20 punten, maar niet meer dan een dealerblackjack.
 
 Ook heb ik nu de endscreentekst gecentraliseerd, waardoor het coinfest er mooier uitziet, en ik heb IT'S A TIE met BLACKJACK ook aangepast naar IT'S A TIE, BUT A BLACKJACK TIE.
+
+### Pre-release 4
+
+Tot nu toe was mijn code één grote rommelboel, het was niet duidelijk welke functies waar stonden, er waren soms comments maar veel te zeldzaam. Dat is nu allemaal gefixt:
+
+Game.py bevat nu enkel imports en de 2 belangrijkste functies: drawgame() en play()
+
+Cards.py bevat de classes Card, Deck en Hand, definiëert globale objecten en bevat alle functies die met kaarten te maken hebben. Het staat nu ook in de volgorde imports, classes, globals, functies, objects.
+
+Globals.py initiëert pygame, bevat alle globals die geen classes nodig hebben, en bevat 2 functies die nergens anders passen: add_to_list() en ruleswritten(). De eerste van de twee omdat het, ook al handelt het alleen kaarten af, werkt voor elke lijst, dat is ook handig mocht ik die in een toekomstig project opnieuw willen gebruiken.
+
+Pointsystem.py doet alles rond de score, zowel die van de speler als die van de dealer.
+
+en Wallet.py handelt alles met geld af, de class Bundle, de globale objecten die die class gebruiken, en alle classes die interacties tussen bundles afhandelen. Tot slot ook nog de functie coinanimation() omdat dit ook met geld te maken heeft.
+
+Ook heb ik animating functions altijd op het einde gezet (behalve in Game.py, want daar is dat niet logisch.)

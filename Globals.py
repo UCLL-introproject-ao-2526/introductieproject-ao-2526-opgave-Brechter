@@ -48,7 +48,7 @@ LOSE_COLOR = '#FF322E'
 TIED_COLOR = "#4040FF"
 DEAD_COLOR = "#000000"
 
-#gamestates
+#gamestates and conditions
 playing = False
 betting = True
 dealerturn_init = False
@@ -72,3 +72,39 @@ show_rules = False
 blackjack = False
 music_on = True
 coinanimation = False
+
+    #here are some functions that don't really involve a specific part of the game functionality
+
+#more about this function in logboek.md under Beta 1.1
+def add_to_list(elem, list):
+    list.append(elem)
+    if len(list)%2 == 1:
+        return list
+    else:
+        list.reverse()
+        if len(list) == 2:
+            return list
+        else:
+            l1 = [list[-3], list[-1]]
+            lf = [list[0], list[2]]
+            if len(list) == 4:
+                return l1 + lf
+            else:
+                return l1 + [list[1], list[4]] + lf
+
+#this function generates the rules tab
+def ruleswritten(screen):
+    with open('Rules.txt', 'r') as file:
+        lines = file.readlines()
+        ycoord = 10
+        for line in lines:
+            line.strip()
+            if line[0] == "=":
+                text = FONT_SMALL.render(line[1:-1], True, TEXT_COLOR)
+                ycoord += 30
+            else:
+                text = FONT_TINY.render(line[:-1], True, TEXT_COLOR)
+                ycoord += 20
+            center = text.get_rect(center = (MIDW, ycoord))
+            screen.blit(text, center)
+
