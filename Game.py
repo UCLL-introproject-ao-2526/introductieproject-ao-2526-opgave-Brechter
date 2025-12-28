@@ -1,4 +1,5 @@
 import pygame as pg
+import random as rd
 from Wallet import *
 from Cards import *
 from Pointsystem import *
@@ -70,8 +71,13 @@ def drawgame(active, betting):
     global cheats_on
     global blackjack
     global show_rules
+    global music_on
     button_list = []
 
+    
+    
+    Music_button = pg.draw.rect(screen, BG_COLOR, (WIDTH-59, HEIGHT-44, 51, 36))
+    
     #startscreen
     if show_rules:
         back = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(50, 50))
@@ -241,6 +247,10 @@ def drawgame(active, betting):
                         screen.blit(instext, (40, MIDH-80))
                         button_list.append(ins_y)
                         button_list.append(ins_n)
+    Music_button_img = pg.image.load(f"Card_designs/Music_{'on' if music_on else 'off'}.png")
+    Mbbr = Music_button_img.get_rect(bottomright = (WIDTH-8, HEIGHT-8))
+    screen.blit(Music_button_img, Mbbr)
+    button_list.append(Music_button)
     return button_list
 
 
@@ -251,6 +261,7 @@ def play():
     run = True
     frame = 0
     setupdealt = 0
+    end_music = True
 
     #main game loop
     while run:
@@ -279,9 +290,16 @@ def play():
         global cheats_on
         global blackjack
         global show_rules
+        global music_on
         animation = dcardanimation or pcardanimation or setupanimation
         endscreen = winscreen or tiedscreen or losescreen or deadscreen
         button_list = drawgame(playing, betting)
+        end_music = not pg.mixer.music.get_busy()
+
+        if end_music and not deadscreen:
+            end_music = False
+            pg.mixer.music.load(rd.choice(tracks))
+            pg.mixer.music.play()
         
         if setupanimation and frame > 30:
             if setupdealt < 2:
@@ -351,6 +369,9 @@ def play():
             if wallet.amount == 0:
                 losescreen = False
                 deadscreen = True
+                pg.mixer.music.unload()
+                pg.mixer.music.load("Tracks/game-over-deep-male-voice-clip-352695.mp3")
+                pg.mixer.music.play()
             frame = 0
             game_end = False
 
@@ -378,7 +399,11 @@ def play():
             if event.type == pg.QUIT:
                 run = False
             if event.type == pg.MOUSEBUTTONUP:
-                    
+                
+                if button_list[-1].collidepoint(event.pos):
+                    music_on = not music_on
+                    pg.mixer.music.set_volume(100*music_on)
+
                 #startscreen
                 if show_rules:
                     if button_list[0].collidepoint(event.pos):

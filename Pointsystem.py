@@ -23,8 +23,11 @@ def TotalPoints(Score, Aces):
     else:        
         return Score
     
-def CompareScores(Player, Dealer): #dealerblackjack = -2, loss = -1, tie = 0, win = 1, blackjack = 2
+def CompareScores(Player, Dealer):
     if Player == 21:
         return 3
     else:
-        return int(Player >= Dealer) + int(Player > Dealer)
+        if Player != -1:
+            return int(Player >= Dealer) + int(Player > Dealer)
+        else:
+            return 0

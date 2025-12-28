@@ -21,5 +21,5 @@ If the dealer gets a blackjack you will get your insurance back twice, if not yo
 
 =Card count
 If you turn on cheats, you'll see a card count. 
-If that count is high, you're best of to bet high. if the count is low, you better bet low.
+If that count is high, you're best off to bet high. if the count is low, you better bet low.
 The count will increase with a number 2 through 6 and decrease with 10 through ace.
