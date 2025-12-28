@@ -25,9 +25,10 @@ FONT_BIG = pg.font.Font("freesansbold.ttf", 100)
 timer = pg.time.Clock()
 tracks = ["Tracks/smooth-evening-saxophone-jazz-background-music-for-youtube-345557.mp3", 
           "Tracks/smooth-instrumental-jazz-music-360498.mp3", 
-          "Tracks\smooth-jazz-388604.mp3",
-          "Tracks\smooth-jazz-cafe-session-1-306314.mp3",
-          "Tracks\smooth-jazz-saxophone-solo-with-a-lofi-vibe-253950.mp3"]
+          "Tracks/smooth-jazz-388604.mp3",
+          "Tracks/smooth-jazz-cafe-session-1-306314.mp3",
+          "Tracks/smooth-jazz-saxophone-solo-with-a-lofi-vibe-253950.mp3"]
+coins_in_anim = []
 
 #colors
 BG_COLOR = "#00A000"
@@ -62,3 +63,4 @@ cheats_on = False
 show_rules = False
 blackjack = False
 music_on = True
+coinanimation = False

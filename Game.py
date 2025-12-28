@@ -72,6 +72,8 @@ def drawgame(active, betting):
     global blackjack
     global show_rules
     global music_on
+    global coinanimation
+    global coins_in_anim
     button_list = []
 
     
@@ -140,6 +142,16 @@ def drawgame(active, betting):
 
         #the betting menu
         if betting:
+            if coinanimation:
+                for i in range(len(coins_in_anim)):
+                    coins_in_anim[i] = Coinanimation(screen, coins_in_anim[i])
+                while i < len(coins_in_anim):
+                    if coins_in_anim[i][1] > 15:
+                        coins_in_anim.pop(i)
+                        i -= 1
+                    i += 1
+                coinanimation = len(coins_in_anim) > 0
+            
             bet = pg.draw.circle(screen, color=BUTTON_COLOR, radius=40, center=(MIDW, MIDH))
             bettext = FONT_SMALL.render('BET', True, BUTTON_TEXT_COLOR)
             screen.blit(bettext, (MIDW-18, MIDH-9))
@@ -168,6 +180,8 @@ def drawgame(active, betting):
             if prevent_bet:
                 text = FONT_SMALL.render('You must place a bet before playing', True, BUTTON_TEXT_COLOR)
                 screen.blit(text, (292, MIDH+75))
+
+            
 
         
         #if the game ends
@@ -291,6 +305,8 @@ def play():
         global blackjack
         global show_rules
         global music_on
+        global coinanimation
+        global coins_in_anim
         animation = dcardanimation or pcardanimation or setupanimation
         endscreen = winscreen or tiedscreen or losescreen or deadscreen
         button_list = drawgame(playing, betting)
@@ -422,6 +438,9 @@ def play():
                 elif playing and betting:
                     if button_list[0].collidepoint(event.pos):
                         BetAdd()
+                        if wallet.amount >= 20:
+                            coinanimation = True
+                            coins_in_anim.append((pg.image.load("Card_designs/Money.png"), 0))
                     if button_list[1].collidepoint(event.pos):
                         BetReset()
                     if button_list[2].collidepoint(event.pos):
