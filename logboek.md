@@ -230,4 +230,14 @@ Pointsystem.py doet alles rond de score, zowel die van de speler als die van de 
 
 en Wallet.py handelt alles met geld af, de class Bundle, de globale objecten die die class gebruiken, en alle classes die interacties tussen bundles afhandelen. Tot slot ook nog de functie coinanimation() omdat dit ook met geld te maken heeft.
 
+Setup.py bestaat nu niet meer omdat alle functies en objecten verplaatst zijn.
+
 Ook heb ik animating functions altijd op het einde gezet (behalve in Game.py, want daar is dat niet logisch.)
+
+## 29-12-2025
+
+Vandaag begin ik eigenlijk met de challenges, maar hier en daar doe ik nog kleine aanpassingen en bugfixes
+
+### Pre-release 5
+
+Ik heb er nu voor gezorgd dat de muziek niet zomaar mute als je hem afzet, maar dat hij ook stopt, zodat je als je hem terug aanzet kan beginnen met een liedje ipv in het midden te beginnen met luisteren.

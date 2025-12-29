@@ -72,6 +72,7 @@ show_rules = False
 blackjack = False
 music_on = True
 coinanimation = False
+music_allowed = True
 
     #here are some functions that don't really involve a specific part of the game functionality
 
@@ -107,4 +108,3 @@ def ruleswritten(screen):
                 ycoord += 20
             center = text.get_rect(center = (MIDW, ycoord))
             screen.blit(text, center)
-

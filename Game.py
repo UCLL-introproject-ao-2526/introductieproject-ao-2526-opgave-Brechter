@@ -321,7 +321,7 @@ def play():
         end_music = not pg.mixer.music.get_busy()
 
         #this block plays a new track when the old one has ended
-        if end_music and not deadscreen:
+        if end_music and not deadscreen and music_on:
             end_music = False
             track_number = rd.randint(0, len(tracks)-1)
             while track_number == just_played:
@@ -329,6 +329,11 @@ def play():
             just_played = track_number
             pg.mixer.music.load(tracks[track_number])
             pg.mixer.music.play()
+        
+        #this block makes sure the music stops if you press music off
+        if not music_on:
+            end_music = True
+            pg.mixer.music.unload()
         
         #gamestate
         if setupanimation and frame > 30:
@@ -443,7 +448,6 @@ def play():
                 #this mutes or unmutes the music
                 if button_list[-1].collidepoint(event.pos):
                     music_on = not music_on
-                    pg.mixer.music.set_volume(100*music_on)
 
                 #startscreen
                 if show_rules:
