@@ -77,6 +77,9 @@ music_allowed = True
     #here are some functions that don't really involve a specific part of the game functionality
 
 #more about this function in logboek.md under Beta 1.1
+#it works for position configurations of 6421357, this function caps at 7 because it's used for this game.
+#to expand it you'll need to handle even numbers on a case-by-case basis.
+#though you could do something by multiplying bools with lists and adding it to l1 and lf.
 def add_to_list(elem, list):
     list.append(elem)
     if len(list)%2 == 1:
@@ -95,7 +98,7 @@ def add_to_list(elem, list):
 
 #this function generates the rules tab
 def ruleswritten(screen):
-    with open('Rules.txt', 'r') as file:
+    with open('Project/Rules.txt', 'r') as file:
         lines = file.readlines()
         ycoord = 10
         for line in lines:
