@@ -241,3 +241,15 @@ Vandaag begin ik eigenlijk met de challenges, maar hier en daar doe ik nog klein
 ### Pre-release 5
 
 Ik heb er nu voor gezorgd dat de muziek niet zomaar mute als je hem afzet, maar dat hij ook stopt, zodat je als je hem terug aanzet kan beginnen met een liedje ipv in het midden te beginnen met luisteren.
+
+## 02-01-2026
+
+### Full release
+
+Vandaag is de deadline en de full release, aan de game heb ik niets meer veranderd, maar het logboek en alle andere dingen zoals Challenges, Bronnen.txt etc. heb ik wel nog aangepas
+
+# feedback
+
+Op 28 december 2025 heb ik een mail gestuurd voor feedback, maar deze is niet beantwoord (tot 2 januari 2026 minstens). Wel heb ik feedback gevraagd aan vrienden, en zij hebben mij allemaal gewezen op een glitch dat klikken tijdens de beurt van de dealer de game crasht. dat heb ik in Beta 1.4.1 gefixt.
+Voor de rest zei iemand mij dat er een klein spelfoutje was in de rules-tab, ook dit is gefixt in Beta 1.5.
+Tot slot was er ook nog een soft-lock op 10 muntjes, dat is gefixt in Pre-release 2
