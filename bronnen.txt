@@ -1,0 +1,13 @@
+Reflectie bij video https://www.youtube.com/watch?v=hG9SzQxaCm8 
+Het ging over wiskunde voor game developers, en specifieker eigenlijk de fysica erachter.
+Hij vertelde over hoe een sprong berekend moet worden door game developers en alles waar rekening mee gehouden moet worden.
+Dit is de klassieke parabool die voortkomt door zwaartekracht en deze parabool heeft bepaalde features:
+Ten eerste is elke parabool symmetrisch wat betekent dat de sprong voor de top evenlang duurt als de sprong erna.
+En ten tweede heeft elke parabool dezelfde vorm wat betekent dat voor elke verzameling van drie (niet colinneaire) punten er exact 1 parabool is die door alledrie gaat.
+In het tweede deel van zijn presentatie ging hij voort over het breken van deze fysica.
+Dit kan door de zwaartekracht te veranderen eens de piek bereikt is (zoals bij mario), door double jump mechanics in te voeren en nog meer.
+Toen vertelde hij verder over hoe je dit moet berekenen.
+Ik vond het een interessante video, maar ik wist over het eerste deel van de inhoud alles al wel.
+Daarnaast vond ik zijn presentatiestijl een beetje aan de saaie kant gezien hij gewoon vooraan stond zonder te veel te bewegen.
+Maar al bij al bracht hij de inhoud wel goed, grondig en gedetaileerd.
+Het was een interessante video over hoe zwaartekracht werkt in games met verschillende jump-mechanics.
