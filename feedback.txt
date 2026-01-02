@@ -1,0 +1,31 @@
+Hey Daan
+
+Met deze mail zou ik graag een beetje kritiek geven op het vak.
+
+Ik vind het zelf heel leuk om een project te doen, zeker omdat er zo veel vrijheid is.
+Wel vind ik dat we in dit geval voor een groot deel van het project juist heel weinig vrijheid is, nl. het tutorial-gedeelte.
+Als ik een spel zoals blackjack wil maken ga ik dat sowieso op mijn eigen manier doen, als we een tutorial volgen kan ik evengoed op het einde gewoon zijn git-files downloaden en daarmee aan de slag gaan.
+Het gedeelte daarna was wel écht leuk toen ik er mijn eigen features aan kon toevoegen.
+
+Wat de challenges betreft heb ik wel een paar zaken te zeggen:
+Ten eerste staan er links en rechts fouten in, en dan gaat het niet over een woord dat fout vervoegd is, dan heb ik het echt over woorden die weggelaten zijn of dubbel getypt.
+Ook woorden die gespeld zijn alsof ze op een gsm getypt en maar vlug verstuurd zijn.
+Dit zijn fouten die vermeden kunnen worden door alles 1 keer door te lezen.
+Daarnaast is de inhoud van de challenges ook niet altijd even kwalitatief, bij de meeste challenges moet ik een klein ding op google zoeken en bij sommige daarvan heeft het ook niets te maken met wat er effectief in het document stond en voelde het gewoon aan alsof er een vraag stond puur om er een te hebben.
+Ook is een een document qr-code dat er duidelijk alleen in staat voor de grap, wat ik eigenlijk niet eerlijk vind tegenover iedereen die nogal veel geld betaalt voor deze opleiding.
+Toen ik dat opende dacht ik veel te leren over qr-codes maar alles wat erin stond was hoeveel bits een qr-code kan opslaan en een rickroll link.
+Als je zo een grap uit wilt halen, voel je vrij, maar zet er dan op zijn minst meer en interessante info in over qr-codes. 
+Er zijn qr-codes die meer bits kunnen opslaan, daar wordt niets over gezegd, of waarom er altijd 3 vierkanten in de hoeken staan etc.
+Maar genoeg daarover want ik heb er al meer woorden aan vuil gemaakt dan dat er effectief in dat document te vinden zijn.
+Ik heb dan een mail (niet ver voor de deadline, maar een week is meer dan genoeg volgens de info) gestuurd waar ik geen antwoord op heb gekregen en ondertussen zit ik hier en weet ik niet hoe ik de challenges kan verifyen.
+Met het crack-gedeelte kan ik gewoon niet beginnen aangezien er niets van uitleg staat wat het is, waarom het nodig is, of hoe ik er iets mee doe, wel krijg ik een witte afbeelding en wordt er mij gevraagd wie erin te vinden is.
+ 
+
+Ook waren er veel zaken niet duidelijk die als triviaal aangenomen worden.
+Dit gaat voornamelijk over git, de algemene dingen kan ik wel vinden op stack exchange, meer gesofisticeerde dingen met AI, maar toch zijn er nog steeds zaken waar ik geen antwoord op vind.
+Als dan de mails ook niet beantwoord worden kan ik eigenlijk niets doen.
+
+Over het algemeen vond ik het wel leuk om aan dit project te werken, maar er zijn veel zaken die met weinig moeite sterk verbeterd kunnen worden.
+
+Met vriendelijke groeten
+Brecht Ketelslegers Op de Beeck
